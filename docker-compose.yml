@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  dj_postgres:
+    image: postgres:14
+    container_name: dj_postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=dj_name
+      - POSTGRES_USER=dj_user
+      - POSTGRES_PASSWORD=dj_pass
+    networks:
+      - dj_main_network
+
+  dj_memcached:
+    image: memcached:latest
+    container_name: dj_memcached
+    restart: always
+    ports:
+      - "11211:11211"
+    networks:
+      - dj_main_network
+    depends_on:
+      - dj_postgres
+
+networks:
+  dj_main_network:
+    external: true
