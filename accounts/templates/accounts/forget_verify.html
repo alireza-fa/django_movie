@@ -2,29 +2,29 @@
 
 {% load static %}
 
-{% block title %}فراموشی رمز عبور{% endblock %}
+{% block title %}تایید حساب{% endblock %}
 
 {% block content %}
 	<!-- sign in -->
-	<div dir="rtl" class="sign section--full-bg" data-bg="{% static 'img/bg.jpg' %}">
+	<div class="sign section--bg" data-bg="img/bg.jpg">
 		<div class="container">
 			<div class="row">
 				<div class="col-12">
 					<div class="sign__content">
 						<!-- authorization form -->
-						<form action="" method="post" class="sign__form" novalidate>{% csrf_token %}
+						<form action="" method="post" novalidate class="sign__form">{% csrf_token %}
 							<a href="{% url 'core:home' %}" class="sign__logo">
 								<img src="{% static 'img/logo.svg' %}" alt="">
 							</a>
 
 							<div class="sign__group">
-								{{ form.email }}
-								<h5 style="color:#ff0000;">{{ form.email.errors }}</h5>
+								{{ form.code }}
+								<h5 style="color:#ff0000;">{{ form.code.errors }}</h5>
 							</div>
 							
 							<button class="sign__btn" type="submit">ارسال</button>
 
-							<span class="sign__text">ما یک کد به ایمیل شما می فرستیم</span>
+							<span class="sign__text">رمز عبور جدیدی به ایمیل شما ارسال می شود</span>
 						</form>
 						<!-- end authorization form -->
 					</div>

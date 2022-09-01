@@ -1,7 +1,7 @@
 from django.contrib.auth.models import BaseUserManager
 
 
-class UserManager(BaseUserManager):
+class AdminManager(BaseUserManager):
     def create_user(self, email=None, password=None, username=None, first_name=None, last_name=None):
         if email is None:
             raise ValueError('User must have email')
@@ -20,3 +20,8 @@ class UserManager(BaseUserManager):
         user.is_superuser = True
         user.save(using=self._db)
         return user
+
+
+class UserManager(AdminManager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True)

@@ -2,7 +2,7 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.utils.translation import gettext_lazy as _
-from .managers import UserManager
+from .managers import UserManager, AdminManager
 
 
 class User(AbstractBaseUser):
@@ -32,6 +32,7 @@ class User(AbstractBaseUser):
     is_admin = models.BooleanField(default=False)
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, default=Member, verbose_name=_('role'))
 
+    default_manager = AdminManager()
     objects = UserManager()
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('username',)

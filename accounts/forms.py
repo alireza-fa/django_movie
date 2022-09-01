@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from .utils import otp_code
 from .tasks import send_mail_task
 from convert_numbers import persian_to_english
+from random import randint
 
 
 error_msg = {
@@ -116,7 +117,10 @@ class RegisterForm(forms.Form):
 
 
 class VerifyAccountForm(forms.Form):
-    code = forms.CharField(widget=forms.TextInput(attrs={"class": 'sign__input', "placeholder": 'کد تایید'}))
+    code = forms.CharField(
+        widget=forms.TextInput(attrs={"class": 'sign__input', "placeholder": 'کد تایید'}),
+        error_messages=error_msg
+    )
 
     def __init__(self, request=None, *args, **kwargs):
         self.request = request
@@ -147,5 +151,69 @@ class VerifyAccountForm(forms.Form):
             username=cache_info['username'], email=cache_info['email'], password=cache_info['password'])
         del self.request.session['register_info']
         login(request=self.request, user=user, backend='django.contrib.auth.backends.ModelBackend')
+
+        return code
+
+
+class ForgetPasswordForm(forms.Form):
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={"class": 'sign__input', "placeholder": 'ایمیل'}),
+        error_messages=error_msg
+    )
+
+    def __init__(self, request=None, *args, **kwargs):
+        self.request = request
+        super(ForgetPasswordForm, self).__init__(*args, **kwargs)
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        has_user = get_user_model().objects.filter(email=email).exists()
+        if not has_user:
+            raise forms.ValidationError('ایمیل وارد شده ثبت نشده است')
+        if self.request.session.get('forget_info', None):
+            if self.request.session['forget_info']['time'] >= 10:
+                raise forms.ValidationError('شما بیش از حد مجاز درخواست فرستاده اید')
+            else:
+                self.request.session['forget_info']['time'] += 1
+                self.request.session.modified = True
+        else:
+            self.request.session['forget_info'] = {"email": email, "time": 1}
+        code = otp_code()
+        cache.set(key=email, value=code, timeout=120)
+        send_mail_task.delay('کد تایید', code, [email])
+        return email
+
+
+class ForgetPasswordVerifyForm(forms.Form):
+    code = forms.CharField(widget=forms.TextInput(
+        attrs={"class": 'sign__input', "placeholder": 'کد تایید'}), error_messages=error_msg
+    )
+
+    def __init__(self, request=None, *args, **kwargs):
+        self.request = request
+        super(ForgetPasswordVerifyForm, self).__init__(*args, **kwargs)
+
+    def clean_code(self):
+        code = persian_to_english(self.cleaned_data.get('code'))
+        if len(code) != 4:
+            raise forms.ValidationError('کد وارد شده صحیح نمی باشد')
+
+        forget_info = self.request.session.get('forget_info')
+        if not forget_info:
+            return redirect('accounts:forget')
+
+        cache_code = cache.get(key=forget_info.get('email'))
+        if not cache_code:
+            return redirect('accounts:forget')
+        if code != cache_code:
+            raise forms.ValidationError('کد وارد شده صحیح نمی باشد')
+
+        user = get_user_model().objects.filter(email=forget_info.get('email'))
+        if user.exists():
+            new_pass = str(randint(10000000, 999999999))
+            use = user.first()
+            use.set_password(new_pass)
+            use.save()
+            send_mail_task('رمز عبور جدید شما', new_pass, [forget_info.get('email')])
 
         return code

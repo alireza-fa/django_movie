@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     # local apps
     'accounts.apps.AccountsConfig',
     'core.apps.CoreConfig',
+    'panel.apps.PanelConfig',
     # third party apps
     'social_django',
 ]

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fa">
+
+{% load static %}
+
+<head>
+	{% include 'panel/shared/head.html' %}
+	<meta name="description" content="{% block description %}{% endblock %}">
+	<meta name="author" content="{% block author %}{% endblock %}">
+	<title>{% block title %}{% endblock %}</title>
+
+</head>
+<body>
+	<!-- header -->
+	{% include 'panel/shared/navbar.html' %}
+	<!-- end header -->
+
+	<!-- sidebar -->
+	{% include 'panel/shared/sidebar.html' %}
+	<!-- end sidebar -->
+
+	<!-- main content -->
+	{% block content %}{% endblock %}
+	<!-- end main content -->
+
+	<!-- JS -->
+	{% include 'panel/shared/js.html' %}
+</body>
+
+</html>

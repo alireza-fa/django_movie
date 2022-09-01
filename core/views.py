@@ -8,3 +8,11 @@ class HomeView(TemplateView):
 
 class PrivacyView(TemplateView):
     template_name = 'core/privacy.html'
+
+
+class AboutUsView(TemplateView):
+    template_name = 'core/about.html'
+
+
+class ContactUsView(TemplateView):
+    template_name = 'core/contact.html'
