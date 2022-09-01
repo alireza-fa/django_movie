@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+	{% include 'shared/head.html' %}
+	<meta name="description" content="{% block description %}{% endblock %}">
+	<meta name="keywords" content="{% block keywords %}{% endblock %}">
+	<meta name="author" content="{% block author %}{% endblock %}">
+	<title>{% block title %}{% endblock %}</title>
+
+</head>
+
+<body>
+	{% block content %}{% endblock %}
+
+	<!-- JS -->
+	{% include 'shared/js.html' %}
+</body>
+
+</html>

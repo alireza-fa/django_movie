@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}فراموشی رمز عبور{% endblock %}
+
+{% block content %}
+	<!-- sign in -->
+	<div dir="rtl" class="sign section--full-bg" data-bg="{% static 'img/bg.jpg' %}">
+		<div class="container">
+			<div class="row">
+				<div class="col-12">
+					<div class="sign__content">
+						<!-- authorization form -->
+						<form action="#" class="sign__form">
+							<a href="index.html" class="sign__logo">
+								<img src="{% static 'img/logo.svg' %}" alt="">
+							</a>
+
+							<div class="sign__group">
+								<input type="text" class="sign__input" placeholder="ایمیل">
+							</div>
+
+							<div class="sign__group sign__group--checkbox">
+								<input id="remember" name="remember" type="checkbox" checked="checked">
+								<label for="remember">من می پذیرم <a href="privacy.html">حریم خصوصی</a></label>
+							</div>
+							
+							<button class="sign__btn" type="button">ارسال</button>
+
+							<span class="sign__text">ما یک رمز عبور به ایمیل شما ارسال خواهیم کرد</span>
+						</form>
+						<!-- end authorization form -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end sign in -->
+
+{% endblock %}

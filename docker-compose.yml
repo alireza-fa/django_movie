@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.3"
 
 services:
   dj_postgres:
@@ -13,6 +13,15 @@ services:
       - POSTGRES_PASSWORD=dj_pass
     networks:
       - dj_main_network
+
+  dj_rabbitmq:
+    container_name: dj_rabbitmq
+    image: rabbitmq:latest
+    networks:
+      - dj_main_network
+    ports:
+      - "5672:5672"
+    restart: always
 
   dj_memcached:
     image: memcached:latest
