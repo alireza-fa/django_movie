@@ -34,34 +34,43 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-12 col-lg-7 col-xl-8">
-					<form action="#" class="sign__form sign__form--contacts">
+					<form action="" method="post" novalidate class="sign__form sign__form--contacts">{% csrf_token %}
 						<div class="row">
+							{% if messages %}
+							{% for message in messages %}
+							<h4 style="color:#ff0000;">{{ message }}</h4>
+							{% endfor %}
+							{% endif %}
 							<div class="col-12 col-xl-6">
 								<div class="sign__group">
-									<input type="text" name="name" class="sign__input" placeholder="نام">
+									{{ form.name }}
+									<h5 style="color:#ff0000;">{{ form.name.errors }}</h5>
 								</div>
 							</div>
 
 							<div class="col-12 col-xl-6">
 								<div class="sign__group">
-									<input type="text" name="email" class="sign__input" placeholder="ایمیل">
+									{{ form.email }}
+									<h5 style="color:#ff0000;">{{ form.email.errors }}</h5>
 								</div>
 							</div>
 
 							<div class="col-12">
 								<div class="sign__group">
-									<input type="text" name="subject" class="sign__input" placeholder="موضوع">
+									{{ form.subject }}
+									<h5 style="color:#ff0000;">{{ form.subject.errors }}</h5>
 								</div>
 							</div>
 
 							<div class="col-12">
 								<div class="sign__group">
-									<textarea name="text" class="sign__textarea" placeholder="پیام خود را بنویسید . . ."></textarea>
+									{{ form.body }}
+									<h5 style="color:#ff0000;">{{ form.body.errors }}</h5>
 								</div>
 							</div>
 
 							<div class="col-12 col-xl-3">
-								<button type="button" class="sign__btn">ارسال</button>
+								<button type="submit" class="sign__btn">ارسال</button>
 							</div>
 						</div>
 					</form>	
@@ -71,8 +80,8 @@
 					<h2 class="section__title section__title--sidebar">اطلاعات</h2>
 					<p class="section__text">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است</p>
 					<ul class="contacts__list">
-						<li dir="ltr"><a href="tel:+989110000000">+98 911 000 0000</a></li>
-						<li><a href="mailto:support@flixtv.template">support@flixtv.template</a></li>
+						<li dir="ltr"><a href="tel:+989110000000">+989309806535</a></li>
+						<li><a href="mailto:alirezafeyze44@gmail.com">alirezafeyze44@gmail.com</a></li>
 					</ul>
 					<div class="contacts__social">
 						<a href="#" target="_blank"><svg width="30" height="30" viewBox="0 0 30 30" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 15C0 6.71573 6.71573 0 15 0C23.2843 0 30 6.71573 30 15C30 23.2843 23.2843 30 15 30C6.71573 30 0 23.2843 0 15Z" fill="#3B5998"/><path d="M16.5634 23.8197V15.6589H18.8161L19.1147 12.8466H16.5634L16.5672 11.4391C16.5672 10.7056 16.6369 10.3126 17.6904 10.3126H19.0987V7.5H16.8457C14.1394 7.5 13.1869 8.86425 13.1869 11.1585V12.8469H11.4999V15.6592H13.1869V23.8197H16.5634Z" fill="white"/></svg></a>

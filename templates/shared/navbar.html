@@ -76,16 +76,9 @@
 
                             <ul class="dropdown-menu header__nav-menu header__nav-menu--scroll"
                                 aria-labelledby="dropdownMenu3">
-                                <li><a href="about.html">درباره ما</a></li>
-                                <li><a href="profile.html">پروفایل</a></li>
-                                <li><a href="contacts.html">تماس با ما</a></li>
-                                <li><a href="interview.html">مصاحبه</a></li>
-                                <li><a href="../admin/index.html" target="_blank">صفحات مدیریت</a></li>
-                                <li><a href="privacy.html">حریم خصوصی</a></li>
-                                <li><a href="signin.html">وارد شوید</a></li>
-                                <li><a href="signup.html">ثبت نام کنید</a></li>
-                                <li><a href="forgot.html">فراموشی رمز عبور</a></li>
-                                <li><a href="404.html">خطای 404</a></li>
+                                <li><a href="{% url 'core:about' %}">درباره ما</a></li>
+                                <li><a href="{% url 'core:contact' %}">تماس با ما</a></li>
+                                <li><a href="{% url 'core:privacy' %}">حریم خصوصی</a></li>
                             </ul>
                         </li>
                     </ul>
