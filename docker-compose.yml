@@ -1,9 +1,9 @@
 version: "3.3"
 
 services:
-  dj_postgres:
+  dj_mian_postgres:
     image: postgres:14
-    container_name: dj_postgres
+    container_name: dj_main_postgres
     restart: always
     ports:
       - "5432:5432"
@@ -11,6 +11,17 @@ services:
       - POSTGRES_DB=dj_name
       - POSTGRES_USER=dj_user
       - POSTGRES_PASSWORD=dj_pass
+    networks:
+      - dj_main_network
+
+  dj_secondary_postgres:
+    image: postgres:14
+    container_name: dj_secondary_postgres
+    restart: always
+    environment:
+      - POSTGRES_DB='sec_name'
+      - POSTGRES_USER='sec_user'
+      - POSTGRES_PASSWORD='sec_pass'
     networks:
       - dj_main_network
 

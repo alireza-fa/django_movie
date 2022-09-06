@@ -74,16 +74,39 @@ WSGI_APPLICATION = 'A.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASS,
-        'HOST': DB_HOST,
-        'PORT': DB_PORT
+if DEBUG:
+    DATABASES = {
+        'default': {},
+        'main_db': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'main_db.sqlite3',
+        },
+        'secondary_db': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'secondary_db.sqlite3',
+        }
     }
-}
+
+else:
+    DATABASES = {
+        'default': {},
+        'mian_db': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': MAIN_DB_NAME,
+            'USER': MAIN_DB_USER,
+            'PASSWORD': MAIN_DB_PASS,
+            'HOST': MAIN_DB_HOST,
+            'PORT': MAIN_DB_PORT
+        },
+        'secondary_db': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': SEC_DB_NAME,
+            'USER': SEC_DB_USER,
+            'PASSWORD': SEC_DB_PASS,
+            'HOST': SEC_DB_HOST,
+            'PORT': SEC_DB_PORT
+        }
+    }
 
 
 # Password validation
@@ -117,7 +140,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = False
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -160,3 +182,5 @@ AUTHENTICATION_BACKENDS = [
 
 # Social Auth
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
+
+DATABASE_ROUTERS = ['db_routers.routers.MainRouter', 'db_routers.routers.SecondaryRouter']
