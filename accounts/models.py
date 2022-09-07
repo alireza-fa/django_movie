@@ -30,6 +30,7 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=32, null=True, blank=True, verbose_name=_('last name'))
     is_active = models.BooleanField(default=True, verbose_name=_('is active'))
     is_admin = models.BooleanField(default=False)
+    is_superuser = models.BooleanField(default=False)
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, default=Member, verbose_name=_('role'))
 
     default_manager = AdminManager()
