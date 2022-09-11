@@ -26,10 +26,17 @@
 								<img src="img/user.svg" alt="">
 							</div>
 							<!-- or red -->
+							{% if object.is_active %}
 							<div class="profile__meta profile__meta--green">
 								<h3>نام کاربری <span>(تایید شده)</span></h3>
-								<span>شناسه کاربری : 23562</span>
+								<span>شناسه کاربری : {{ object.id }}</span>
 							</div>
+							{% else %}
+							<div class="profile__meta profile__meta--red">
+								<h3>نام کاربری <span>(تایید نشده)</span></h3>
+								<span>شناسه کاربری : {{ object.id }}</span>
+							</div>
+							{% endif %}
 						</div>
 						<!-- end profile user -->
 
@@ -86,7 +93,8 @@
 								<div class="row">
 									<!-- details form -->
 									<div class="col-12 col-lg-6">
-										<form action="#" class="sign__form sign__form--profile sign__form--first">
+										<form action="" method="post" class="sign__form sign__form--profile sign__form--first">
+											{% csrf_token %}
 											<div class="row">
 												<div class="col-12">
 													<h4 class="sign__title">جزئیات حساب</h4>
@@ -94,29 +102,29 @@
 
 												<div class="col-12 col-md-6 col-lg-12 col-xl-6">
 													<div class="sign__group">
-														<label class="sign__label" for="username">وارد شوید</label>
-														<input id="username" type="text" name="username" class="sign__input" placeholder="User123">
+														<label class="sign__label" for="username">نام کاربری</label>
+														{{ form.username }}
 													</div>
 												</div>
 
 												<div class="col-12 col-md-6 col-lg-12 col-xl-6">
 													<div class="sign__group">
 														<label class="sign__label" for="email">ایمیل</label>
-														<input id="email" type="text" name="email" class="sign__input" placeholder="email@email.com">
+														{{ form.email }}
 													</div>
 												</div>
 
 												<div class="col-12 col-md-6 col-lg-12 col-xl-6">
 													<div class="sign__group">
-														<label class="sign__label" for="firstname">نام</label>
-														<input id="firstname" type="text" name="firstname" class="sign__input" placeholder="ابوالفضل">
+														<label class="sign__label" for="first_name">نام</label>
+														{{ form.first_name }}
 													</div>
 												</div>
 
 												<div class="col-12 col-md-6 col-lg-12 col-xl-6">
 													<div class="sign__group">
-														<label class="sign__label" for="lastname">فامیلی</label>
-														<input id="lastname" type="text" name="lastname" class="sign__input" placeholder="قاسمی">
+														<label class="sign__label" for="last_name">فامیلی</label>
+														{{ form.last_name }}
 													</div>
 												</div>
 
@@ -134,16 +142,12 @@
 												<div class="col-12 col-md-6 col-lg-12 col-xl-6">
 													<div class="sign__group">
 														<label class="sign__label" for="rights">نقش</label>
-														<select class="js-example-basic-single" id="rights">
-															<option value="User">کاربر</option>
-															<option value="Moderator">نویسنده</option>
-															<option value="Admin">مدیریت</option>
-														</select>
+														{{ form.role }}
 													</div>
 												</div>
 
 												<div class="col-12">
-													<button class="sign__btn" type="button">ذخیره</button>
+													<button class="sign__btn" type="submit">ذخیره</button>
 												</div>
 											</div>
 										</form>

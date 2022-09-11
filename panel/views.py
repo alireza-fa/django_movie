@@ -1,10 +1,12 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import TemplateView, ListView, View
+from django.views.generic import TemplateView, ListView, View, UpdateView, FormView
 from django.contrib.auth import get_user_model
+from django.urls import reverse_lazy
 
-from permissions import IsRequiredAdminMixin
+from permissions import IsRequiredAdminMixin, IsRequiredSuperuserMixin
 from core.models import Contact
 from .actions import user_action, contact_action
+from .forms import UserForm
 
 
 class DashboardView(IsRequiredAdminMixin, TemplateView):
@@ -30,8 +32,11 @@ class UserActionView(IsRequiredAdminMixin, View):
         return redirect(request.GET.get('next', 'panel:users'))
 
 
-class UserEditView(IsRequiredAdminMixin, TemplateView):
+class UserEditView(IsRequiredSuperuserMixin, UpdateView):
     template_name = 'panel/edit_user.html'
+    model = get_user_model()
+    form_class = UserForm
+    success_url = reverse_lazy('panel:users')
 
 
 class ContactListView(IsRequiredAdminMixin, ListView):

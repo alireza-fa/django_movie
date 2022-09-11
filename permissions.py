@@ -43,3 +43,12 @@ class IsRequiredAdminMixin:
         if not request.user.is_staff:
             raise Http404
         return super().dispatch(request, *args, **kwargs)
+
+
+class IsRequiredSuperuserMixin:
+    def dispatch(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            raise Http404
+        if not request.user.is_superuser:
+            raise Http404
+        return super().dispatch(request, *args, **kwargs)

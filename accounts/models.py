@@ -11,9 +11,9 @@ class User(AbstractBaseUser):
     ADMIN = 3
 
     ROLE_CHOICES = (
-        (1, _('member')),
-        (2, _('author')),
-        (3, _('admin'))
+        (1, 'کاربر'),
+        (2, 'نویسنده'),
+        (3, 'ادمین')
     )
 
     username_validator = UnicodeUsernameValidator()
@@ -47,4 +47,6 @@ class User(AbstractBaseUser):
 
     @property
     def is_staff(self):
-        return self.is_admin
+        if self.role == 3:
+            return True
+        return False
