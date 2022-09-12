@@ -36,3 +36,13 @@ def contact_action(request, action, pk=None):
             elif action == 'is_read':
                 contact.is_read = True
                 contact.save()
+
+
+def user_delete_action(request, action, pk=None):
+    if action:
+        if action == 'recovery_all':
+            get_user_model().deleted().all().update(is_delete=False)
+    if pk:
+        user = get_object_or_404(get_user_model().deleted.all(), pk=pk)
+        user.is_delete = False
+        user.save()

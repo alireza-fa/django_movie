@@ -1,7 +1,20 @@
 from django.contrib.auth.models import BaseUserManager
+from django.db.models import Q
+from django.utils import timezone
+from django.db.models import QuerySet, Manager
 
 
-class AdminManager(BaseUserManager):
+class SoftQueryset(QuerySet):
+    def delete(self):
+        return self.update(is_delete=True, deleted_at=timezone.now())
+
+
+class SoftManager(BaseUserManager):
+    def get_queryset(self):
+        return SoftQueryset(model=self.model, using='main_db').filter(Q(is_delete=False) | Q(is_delete__isnull=True))
+
+
+class AdminManager(SoftManager):
     def create_user(self, email=None, password=None, username=None, first_name=None, last_name=None):
         if email is None:
             raise ValueError('User must have email')
@@ -16,7 +29,7 @@ class AdminManager(BaseUserManager):
 
     def create_superuser(self, username=None, email=None, password=None):
         user = self.create_user(username=username, email=email, password=password)
-        user.is_admin = True
+        user.role = 3
         user.is_superuser = True
         user.save(using=self._db)
         return user
@@ -24,4 +37,9 @@ class AdminManager(BaseUserManager):
 
 class UserManager(AdminManager):
     def get_queryset(self):
-        return super().get_queryset().filter(is_active=True)
+        return super().get_queryset().filter(Q(is_active=True), Q(is_delete=False) | Q(is_delete__isnull=True))
+
+
+class SoftDeleteManager(Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_delete=True)

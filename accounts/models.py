@@ -2,10 +2,27 @@ from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.utils.translation import gettext_lazy as _
-from .managers import UserManager, AdminManager
+from django.utils import timezone
+
+from .managers import UserManager, AdminManager, SoftDeleteManager
 
 
-class User(AbstractBaseUser):
+class SoftDelete(models.Model):
+    is_delete = models.BooleanField(null=True, blank=True, editable=False)
+    deleted_at = models.DateTimeField(null=True, blank=True, editable=False)
+
+    class Meta:
+        abstract = True
+
+    def delete(self, using=None, keep_parents=False):
+        self.is_delete = True
+        self.deleted_at = timezone.now()
+        self.save()
+
+    deleted = SoftDeleteManager()
+
+
+class User(AbstractBaseUser, SoftDelete):
     Member = 1
     AUTHOR = 2
     ADMIN = 3
@@ -22,7 +39,7 @@ class User(AbstractBaseUser):
         max_length=32, unique=True, verbose_name=_('username'),
         validators=[username_validator],
         error_messages={'unique': _('a user with that username already exists.')})
-    email = models.CharField(
+    email = models.EmailField(
         max_length=199, unique=True, verbose_name=_('email'),
         error_messages={'unique': _('a user with that email already exists.')}
     )

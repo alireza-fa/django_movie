@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 
 from permissions import IsRequiredAdminMixin, IsRequiredSuperuserMixin
 from core.models import Contact
-from .actions import user_action, contact_action
+from .actions import user_action, contact_action, user_delete_action
 from .forms import UserForm
 
 
@@ -22,6 +22,26 @@ class UserListView(IsRequiredAdminMixin, ListView):
         data = super().get_context_data(*args, object_list=None, **kwargs)
         data['count'] = self.get_queryset().count()
         return data
+
+
+class UserDeletedListView(IsRequiredAdminMixin, ListView):
+    model = get_user_model()
+    template_name = 'panel/user_deleted.html'
+    paginate_by = 10
+    queryset = get_user_model().deleted.all()
+
+    def get_context_data(self, *args, object_list=None, **kwargs):
+        data = super().get_context_data(*args, object_list=object_list, **kwargs)
+        data['count'] = self.get_queryset().count()
+        return data
+
+
+class UserDeleteActionView(IsRequiredAdminMixin, View):
+
+    def get(self, request, pk=None):
+        action = request.GET.get('action')
+        user_delete_action(request, action, pk)
+        return redirect('panel:users_deleted')
 
 
 class UserActionView(IsRequiredAdminMixin, View):
