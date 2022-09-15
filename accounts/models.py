@@ -62,6 +62,12 @@ class User(AbstractBaseUser, SoftDelete):
     def __str__(self):
         return self.username
 
+    def has_perm(self, perms, obj=None):
+        return True
+
+    def has_module_perms(self, app_label):
+        return True
+
     @property
     def is_staff(self):
         if self.role == 3:
