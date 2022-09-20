@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 
-from .choices import TYPE_CHOICES, QUALITY_CHOICES, COUNTRY_CHOICES, GENRE_CHOICES
+from .choices import TYPE_CHOICES, QUALITY_CHOICES, COUNTRY_CHOICES, GENRE_CHOICES, IRAN, ACTION
 
 
 class BaseMovieModel(models.Model):
@@ -15,8 +15,10 @@ class BaseMovieModel(models.Model):
 
 class Movie(BaseMovieModel):
     name = models.CharField(max_length=120, verbose_name=_('name'))
+    english_name = models.CharField(max_length=120, verbose_name=_('english name'))
+    slug = models.SlugField(max_length=120, verbose_name=_('slug'))
     description = models.TextField(verbose_name=_('description'))
-    genre = models.CharField(choices=GENRE_CHOICES, default='action', verbose_name=_('genre'))
+    poster = models.ImageField(verbose_name='poster', null=True, blank=True)
     image_cover = models.ImageField(verbose_name=_('image cover'))
     image_background = models.ImageField(verbose_name=_('image background'))
     publish_at = models.DateField(verbose_name=_('publish_at'))
@@ -25,6 +27,7 @@ class Movie(BaseMovieModel):
     quality = models.PositiveSmallIntegerField(choices=QUALITY_CHOICES, default=1, verbose_name=_('quality'))
     time_in_minutes = models.PositiveIntegerField(verbose_name=_('time in minutes'))
     ages = models.PositiveSmallIntegerField(verbose_name=_('ages'))
+    is_free = models.BooleanField(default=True, verbose_name=_('is free'))
     country = models.CharField(max_length=34, choices=COUNTRY_CHOICES, verbose_name=_('country'))
     is_active = models.BooleanField(default=True)
 
@@ -35,6 +38,14 @@ class Movie(BaseMovieModel):
 
     def __str__(self):
         return self.name
+
+
+class MovieGenre(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='genres', verbose_name=_('genre'))
+    genre = models.CharField(max_length=34, choices=GENRE_CHOICES, verbose_name=_('genre'))
+
+    def __str__(self):
+        return f'{self.movie}-{self.genre}'
 
 
 class FilmMovie(Movie):
@@ -63,6 +74,15 @@ class FilmLink(BaseMovieModel):
         return f'{self.film.name[:32]}---{self.name}'
 
 
+class FilmSubtitle(models.Model):
+    film = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='subtitles', verbose_name=_('film'))
+    language = models.CharField(max_length=32, choices=COUNTRY_CHOICES, default=IRAN, verbose_name=_('language'))
+    subtitle = models.FileField(max_length=240, verbose_name=_('subtitle'))
+
+    def __str__(self):
+        return f'{self.film}-{self.language}'
+
+
 class SeriesSeason(BaseMovieModel):
     series = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='seasons', verbose_name=_('series'))
     season = models.PositiveSmallIntegerField(verbose_name=_('season'))
@@ -82,6 +102,7 @@ class SeasonPart(BaseMovieModel):
     season = models.ForeignKey(SeriesSeason, on_delete=models.CASCADE, related_name='parts',
                                verbose_name=_('Season Part'))
     name = models.CharField(max_length=64, verbose_name=_('name'))
+    # poster = models.ImageField(verbose_name=_('poster'))
     part = models.PositiveSmallIntegerField(verbose_name=_('part'))
 
     class Meta:
@@ -91,6 +112,16 @@ class SeasonPart(BaseMovieModel):
 
     def __str__(self):
         return f'{self.season} -- part: {self.part}'
+
+
+class SeasonPartSubtitle(models.Model):
+    season_part = models.ForeignKey(SeasonPart,
+                                    on_delete=models.CASCADE, related_name='subtitles', verbose_name=_('season part'))
+    language = models.CharField(max_length=32, choices=COUNTRY_CHOICES, default=IRAN, verbose_name=_('language'))
+    subtitle = models.FileField(max_length=240, verbose_name=_('subtitle'))
+
+    def __str__(self):
+        return f'{self.season_part}-{self.language}'
 
 
 class PartLink(BaseMovieModel):
