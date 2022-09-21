@@ -12,7 +12,7 @@
 
 	<!-- details -->
 	<section class="section section--head section--head-fixed section--gradient section--details-bg">
-		<div class="section__bg" data-bg="{% static 'img/details.jp' %}g"></div>
+		<div class="section__bg" data-bg="{{ object.image_background.url }}"></div>
 		<div class="container">
 			<!-- article -->
 			<div class="article">
@@ -271,7 +271,7 @@
 										<h4 class="subscribe__title">اعلانات</h4>
 										<p class="subscribe__text">مشترک شدن در اعلان های مربوط به قسمت</p>
 										<div class="sign__group">
-											<input type="text" class="sign__input" placeholder="ایمیل">
+											{{ form.email }}
 										</div>
 										<button type="button" class="sign__btn">ارسال</button>
 									</form>

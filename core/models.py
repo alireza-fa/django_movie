@@ -12,3 +12,10 @@ class Contact(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Magazine(models.Model):
+    email = models.EmailField(max_length=120, unique=True)
+
+    def __str__(self):
+        return self.email

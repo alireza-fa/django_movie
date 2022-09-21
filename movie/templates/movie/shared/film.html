@@ -1,6 +1,7 @@
 <div class="col-12 col-xl-8">
     <!-- trailer -->
-    <a href="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4"
+    {% if object.trailer %}
+    <a href="{{ object.trailer }}"
        class="article__trailer open-video">
         <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fill-rule="evenodd" clip-rule="evenodd"
@@ -12,11 +13,12 @@
         </svg>
         نمایش تیزر
     </a>
+    {% endif %}
     <!-- end trailer -->
 
     <!-- article content -->
     <div class="article__content">
-        <h1>سریع و خشن</h1>
+        <h1>{{ object.name }}</h1>
 
         <ul class="list">
             <li>
@@ -25,15 +27,13 @@
                 </svg>
                 9.7
             </li>
-            <li>اکشن</li>
-            <li>1400</li>
-            <li>1 ساعت 42 دقیقه</li>
-            <li>16+</li>
+            <li>{{ object.genres.first.get_genre_display }}</li>
+            <li>{{ object.publish_at }}</li>
+            <li>{{ object.time_in_minutes }} دقیقه</li>
+            <li>{{ object.ages }}+</li>
         </ul>
 
-        <p>لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون
-            بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی تکنولوژی مورد نیاز و کاربردهای متنوع
-            با هدف بهبود ابزارهای کاربردی می باشد کتابهای زیادی در شصت و سه درصد گذشته حال و آینده</p>
+        <p>{{ object.description }}</p>
     </div>
     <!-- end article content -->
 </div>
@@ -67,12 +67,14 @@
         </div>
 
         <!-- add .active class -->
-        <button class="article__favorites" type="button">
+        {% if request.user.is_authenticated %}
+        <a class="article__favorites" href="{% url 'movie:favorite' object.pk %}" type="button">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                 <path d="M16,2H8A3,3,0,0,0,5,5V21a1,1,0,0,0,.5.87,1,1,0,0,0,1,0L12,18.69l5.5,3.18A1,1,0,0,0,18,22a1,1,0,0,0,.5-.13A1,1,0,0,0,19,21V5A3,3,0,0,0,16,2Zm1,17.27-4.5-2.6a1,1,0,0,0-1,0L7,19.27V5A1,1,0,0,1,8,4h8a1,1,0,0,1,1,1Z"></path>
             </svg>
             افزودن به علاقه مندی
-        </button>
+        </a>
+        {% endif %}
     </div>
 </div>
 <!-- end video player -->
@@ -90,7 +92,7 @@
     <!-- share -->
     <div class="share">
         <h3 class="share__title">اشتراک گذاری</h3>
-        <a href="#" class="share__link share__link--fb">
+        <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.path }}" class="share__link share__link--fb">
             <svg width="9" height="17" viewBox="0 0 9 17" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M5.56341 16.8197V8.65888H7.81615L8.11468 5.84663H5.56341L5.56724 4.43907C5.56724 3.70559 5.63693 3.31257 6.69042 3.31257H8.09873V0.5H5.84568C3.1394 0.5 2.18686 1.86425 2.18686 4.15848V5.84695H0.499939V8.6592H2.18686V16.8197H5.56341Z"/>
             </svg>

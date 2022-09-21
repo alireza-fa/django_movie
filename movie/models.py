@@ -23,6 +23,7 @@ class Movie(BaseMovieModel):
     image_background = models.ImageField(verbose_name=_('image background'))
     publish_at = models.DateField(verbose_name=_('publish_at'))
     created_at = models.DateField(verbose_name=_('created at'))
+    trailer = models.CharField(max_length=240, verbose_name=_('trailer'), null=True, blank=True)
     type = models.PositiveSmallIntegerField(choices=TYPE_CHOICES, default=1, verbose_name=_('type'))
     quality = models.PositiveSmallIntegerField(choices=QUALITY_CHOICES, default=1, verbose_name=_('quality'))
     time_in_minutes = models.PositiveIntegerField(verbose_name=_('time in minutes'))

@@ -1,5 +1,5 @@
 from django import forms
-from .models import Contact
+from .models import Contact, Magazine
 
 
 error_msg = {
@@ -25,3 +25,13 @@ class ContactUsForm(forms.ModelForm):
             "subject": error_msg,
             "body": error_msg,
         }
+
+
+class MagazineForm(forms.ModelForm):
+    class Meta:
+        model = Magazine
+        fields = ('email',)
+
+    widgets = {
+        "email": forms.EmailInput(attrs={"class": 'sign__input', "placeholder": 'ایمیل'})
+    }
