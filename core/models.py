@@ -16,6 +16,13 @@ class Contact(models.Model):
 
 class Magazine(models.Model):
     email = models.EmailField(max_length=120, unique=True)
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ('-created',)
+        verbose_name = _('Magazine')
+        verbose_name_plural = _('Magazines')
 
     def __str__(self):
         return self.email

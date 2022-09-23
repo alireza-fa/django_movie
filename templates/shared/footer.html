@@ -76,46 +76,10 @@
             <div class="col-6 col-md-4 col-lg-3 col-xl-2 order-1 order-md-2 order-lg-1 order-xl-2 offset-md-2 offset-lg-0 offset-xl-1">
                 <h6 class="footer__title">فلیکس تی وی</h6>
                 <div class="footer__nav">
-                    <a href="about.html">درباره ما</a>
-                    <a href="profile.html">پروفایل من</a>
-                    <a href="pricing.html">خرید اشتراک</a>
-                    <a href="contacts.html">تماس با ما</a>
-                </div>
-            </div>
-
-            <div class="col-12 col-md-8 col-lg-6 col-xl-4 order-3 order-lg-2 order-md-3 order-xl-3">
-                <div class="row">
-                    <div class="col-12">
-                        <h6 class="footer__title">دسترسی سریع</h6>
-                    </div>
-
-                    <div class="col-6">
-                        <div class="footer__nav">
-                            <a href="live.html">پخش زنده تلویزیون</a>
-                            <a href="live.html">پخش زنده اخبار</a>
-                            <a href="live.html">پخش زنده ورزش</a>
-                            <a href="live.html">جریان کتابخانه</a>
-                        </div>
-                    </div>
-
-                    <div class="col-6">
-                        <div class="footer__nav">
-                            <a href="category.html">برنامه های تلویزیونی</a>
-                            <a href="category.html">فیلم ها</a>
-                            <a href="category.html">کودک و نوجوان</a>
-                            <a href="category.html">مجموعه ها</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-6 col-md-4 col-lg-3 col-xl-2 order-2 order-lg-3 order-md-4 order-xl-4">
-                <h6 class="footer__title">پشتیبانی</h6>
-                <div class="footer__nav">
-                    <a href="privacy.html">حساب و صورتحساب</a>
-                    <a href="privacy.html">پلن & قیمت گذاری</a>
-                    <a href="privacy.html">دستگاه های پشتیبانی شده</a>
-                    <a href="privacy.html">دسترسی ها</a>
+                    <a href="{% url 'core:about' %}">درباره ما</a>
+                    <a href="{% url 'accounts:profile' %}">پروفایل من</a>
+                    <a href="{% url 'finance:plan' %}">خرید اشتراک</a>
+                    <a href="{% url 'core:contact' %}">تماس با ما</a>
                 </div>
             </div>
         </div>
@@ -124,12 +88,10 @@
             <div class="col-12">
                 <div class="footer__content">
                     <div class="footer__links">
-                        <a href="privacy.html">حریم خصوصی</a>
-                        <a href="privacy.html">شرایط و ضوابط</a>
+                        <a href="{% url 'core:privacy' %}">حریم خصوصی</a>
                     </div>
-                    <small class="footer__copyright">© فارسی سازی و راستچین توسط <a
-                            href="https://www.rtl-theme.com/author/tirtashirika/" target="_blank">تیرتاشی
-                        ریکا</a>.</small>
+                    <small class="footer__copyright">© طراحی بک اند و فرانت اند(ری اکت) توسط <a
+                            href="https://github.com/alireza-fa/" target="_blank">علیرضا و علی</a>.</small>
                 </div>
             </div>
         </div>

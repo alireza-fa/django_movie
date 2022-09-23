@@ -23,4 +23,5 @@ urlpatterns = [
     path('oauth/', include('social_django.urls', namespace='social')),
     path('panel/', include('panel.urls')),
     path('movie/', include('movie.urls')),
+    path('finance/', include('finance.urls')),
 ]

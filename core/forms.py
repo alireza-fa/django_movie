@@ -32,6 +32,8 @@ class MagazineForm(forms.ModelForm):
         model = Magazine
         fields = ('email',)
 
-    widgets = {
-        "email": forms.EmailInput(attrs={"class": 'sign__input', "placeholder": 'ایمیل'})
-    }
+        widgets = {
+            "email": forms.EmailInput(attrs={"class": 'sign__input', "placeholder": 'ایمیل'})
+        }
+
+        error_messages = {"email": error_msg}

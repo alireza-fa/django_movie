@@ -7,7 +7,9 @@
 {% block content %}
 
 	<!-- header (hidden style) -->
+	<header class="header header">
 	{% include 'shared/navbar.html' %}
+	</header>
 	<!-- end header -->
 
 	<!-- head -->
@@ -20,7 +22,7 @@
 
 				<div class="col-12 col-xl-6">
 					<ul class="breadcrumb">
-						<li class="breadcrumb__item"><a href="index.html">صفحه اصلی</a></li>
+						<li class="breadcrumb__item"><a href="{% url 'core:home' %}">صفحه اصلی</a></li>
 						<li class="breadcrumb__item breadcrumb__item--active">تماس با ما</li>
 					</ul>
 				</div>
@@ -80,7 +82,7 @@
 					<h2 class="section__title section__title--sidebar">اطلاعات</h2>
 					<p class="section__text">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است</p>
 					<ul class="contacts__list">
-						<li dir="ltr"><a href="tel:+989110000000">+989309806535</a></li>
+						<li dir="ltr"><a href="tel:+989110000000">+9891111111111</a></li>
 						<li><a href="mailto:alirezafeyze44@gmail.com">alirezafeyze44@gmail.com</a></li>
 					</ul>
 					<div class="contacts__social">

@@ -52,3 +52,11 @@ class IsRequiredSuperuserMixin:
         if not request.user.is_superuser:
             raise Http404
         return super().dispatch(request, *args, **kwargs)
+
+
+class PostRequiredLogin:
+    def dispatch(self, request, *args, **kwargs):
+        if request.method == 'POST':
+            if not request.user.is_authenticated:
+                raise Http404
+        return super().dispatch(request, *args, **kwargs)

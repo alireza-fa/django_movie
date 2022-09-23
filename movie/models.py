@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
+from django.urls import reverse
 
 from .choices import TYPE_CHOICES, QUALITY_CHOICES, COUNTRY_CHOICES, GENRE_CHOICES, IRAN, ACTION
 
@@ -39,6 +40,9 @@ class Movie(BaseMovieModel):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('movie:detail', args=[self.slug])
 
 
 class MovieGenre(models.Model):
@@ -147,7 +151,8 @@ class MovieComment(BaseMovieModel):
                              verbose_name=_('user'))
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='comments', verbose_name=_('movie'))
     body = models.TextField(verbose_name=_('body'))
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='children', verbose_name=_('parent'))
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='children',
+                               verbose_name=_('parent'), null=True, blank=True)
     is_reply = models.BooleanField(default=False, verbose_name=_('is reply'))
     is_active = models.BooleanField(default=True, verbose_name=_('is active'))
 
@@ -161,11 +166,24 @@ class MovieComment(BaseMovieModel):
 
 
 class MovieReview(BaseMovieModel):
+    RATE_CHOICES = (
+        (1, 1),
+        (2, 2),
+        (3, 3),
+        (4, 4),
+        (5, 5),
+        (6, 6),
+        (7, 7),
+        (8, 8),
+        (9, 9),
+        (10, 10),
+    )
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='reviews',
                              verbose_name=_('user'))
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='reviews', verbose_name=_('movie'))
-    rate = models.PositiveSmallIntegerField(verbose_name=_('rate'))
-    body = models.TextField(verbose_name=_('body'))
+    rate = models.PositiveSmallIntegerField(choices=RATE_CHOICES, verbose_name=_('rate'))
+    subject = models.CharField(max_length=120, verbose_name=_('subject'))
+    description = models.TextField(verbose_name=_('body'))
     is_active = models.BooleanField(default=True)
 
     class Meta:
