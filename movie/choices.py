@@ -32,6 +32,7 @@ DENMARK = 'denmark'
 EGYPT = 'egypt'
 FINLAND = 'finland'
 FRANCE = 'france'
+SPAIN = 'spain'
 GERMANY = 'germany'
 HUNGARY = 'hungary'
 INDONESIA = 'indonesia'
@@ -88,6 +89,7 @@ COUNTRY_CHOICES = (
     (UNITED_KINGDOM, 'انگلستان'),
     (UNITED_STATES_OF_AMERICAN, 'آمریکا'),
     (VIETNAM, 'ویتنام'),
+    (SPAIN, 'اسپانیا'),
 )
 
 

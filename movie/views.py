@@ -1,11 +1,13 @@
+from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
-from django.views.generic import View, DetailView, FormView
+from django.views.generic import View, DetailView, FormView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Movie, MovieComment, MovieReview
+from .models import Movie, MovieComment, MovieReview, SeasonPart, Genre
 from core.forms import MagazineForm
 from .forms import CommentMovieForm, ReviewMovieForm
+from .actions import category_action
 
 
 class MovieView(View):
@@ -49,6 +51,29 @@ class MovieDetailView(DetailView, FormView):
         return super().form_valid(form)
 
 
+class PartDetailSeasonView(MovieDetailView):
+    template_name = 'movie/part_detail.html'
+
+    def get_context_data(self, **kwargs):
+        part = get_object_or_404(SeasonPart, pk=self.kwargs['pk'])
+        obj = get_object_or_404(Movie, slug=self.kwargs['slug'])
+        return {
+            "part": part,
+            "object": obj
+        }
+
+    def get_object(self, queryset=None):
+        return get_object_or_404(Movie, slug=self.kwargs['slug'])
+
+    def form_invalid(self, form):
+        context = self.get_context_data()
+        return render(self.request, self.template_name,
+                      {"form": form,
+                       "part": context['part'],
+                       "object": context['object']}
+                      )
+
+
 class MovieFavoriteAction(LoginRequiredMixin, View):
     def get(self, request, pk):
         movie = get_object_or_404(Movie, pk=pk)
@@ -59,3 +84,32 @@ class MovieFavoriteAction(LoginRequiredMixin, View):
             request.user.favorites.create(movie=movie)
         url = reverse_lazy('movie:detail', args=[movie.slug])
         return redirect(request.GET.get('next', url))
+
+
+class MovieCatalogueView(ListView):
+    model = Genre
+    template_name = 'movie/catalogue.html'
+    queryset = Genre.objects.all()
+
+
+class MovieCategoryView(ListView):
+    model = Movie
+    template_name = 'movie/category.html'
+    paginate_by = 20
+
+    def get_queryset(self):
+        genre = self.request.GET.get('genre')
+        action = self.request.GET.get('action')
+        if genre:
+            genre = get_object_or_404(Genre, slug=genre)
+            self.category = genre.name
+            return Movie.objects.filter(genres__genre=genre)
+        if action:
+            self.category = action
+            return category_action(action)
+        raise Http404
+
+    def get_context_data(self, *args, object_list=None, **kwargs):
+        context = super().get_context_data(*args, object_list=object_list, **kwargs)
+        context['category'] = self.category
+        return context

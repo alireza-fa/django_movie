@@ -1,0 +1,38 @@
+<div class="col-12 col-xl-8">
+    <video controls crossorigin playsinline
+           poster="{{ object.poster.url }}" id="player">
+        <!-- Video files -->
+        {% for movie_link in object.links.all %}
+        <source src="{{ movie_link.link }}" type="video/mp4"
+                size="{{ movie_link.quality }}">
+        {% endfor %}
+        <!-- Caption files -->
+        {% for sub in object.subtitles.all %}
+        <track kind="captions" label="{{ sub.get_language_display }}" srclang="{{ sub.language }}"
+               src="{{ sub.subtitle.url }}">
+        {% endfor %}
+        <a href="https://cdn.plyr.io/static/demo/View_From_A_Blue_Moon_Trailer-576p.mp4" download>دانلود</a>
+    </video>
+
+    <div class="article__actions article__actions--details">
+        <div class="article__download">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M21,14a1,1,0,0,0-1,1v4a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V15a1,1,0,0,0-2,0v4a3,3,0,0,0,3,3H19a3,3,0,0,0,3-3V15A1,1,0,0,0,21,14Zm-9.71,1.71a1,1,0,0,0,.33.21.94.94,0,0,0,.76,0,1,1,0,0,0,.33-.21l4-4a1,1,0,0,0-1.42-1.42L13,12.59V3a1,1,0,0,0-2,0v9.59l-2.29-2.3a1,1,0,1,0-1.42,1.42Z"/>
+            </svg>
+            دانلود :
+            {% for movie_link in object.links.all %}
+            <a href="{{ movie_link.link }}" download="#">{{ movie_link.name }}</a>
+            {% endfor %}
+        </div>
+
+        <!-- add .active class -->
+        {% if request.user.is_authenticated %}
+        <a class="article__favorites" href="{% url 'movie:favorite' object.pk %}" type="button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M16,2H8A3,3,0,0,0,5,5V21a1,1,0,0,0,.5.87,1,1,0,0,0,1,0L12,18.69l5.5,3.18A1,1,0,0,0,18,22a1,1,0,0,0,.5-.13A1,1,0,0,0,19,21V5A3,3,0,0,0,16,2Zm1,17.27-4.5-2.6a1,1,0,0,0-1,0L7,19.27V5A1,1,0,0,1,8,4h8a1,1,0,0,1,1,1Z"></path>
+            </svg>
+            افزودن به علاقه مندی
+        </a>
+        {% endif %}
+    </div>
+</div>

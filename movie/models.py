@@ -2,8 +2,10 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import get_user_model
 from django.urls import reverse
+from django.db.models import Avg, Sum, Count
 
-from .choices import TYPE_CHOICES, QUALITY_CHOICES, COUNTRY_CHOICES, GENRE_CHOICES, IRAN, ACTION
+from .choices import TYPE_CHOICES, QUALITY_CHOICES, COUNTRY_CHOICES, IRAN
+from .managers import IsActiveManager
 
 
 class BaseMovieModel(models.Model):
@@ -12,6 +14,19 @@ class BaseMovieModel(models.Model):
 
     class Meta:
         abstract = True
+
+
+class Genre(models.Model):
+    name = models.CharField(max_length=32, verbose_name=_('name'))
+    english_name = models.CharField(max_length=32, verbose_name=_('english name'))
+    slug = models.SlugField(max_length=40, verbose_name=_('slug'))
+    image_cover = models.ImageField(verbose_name=_('image'))
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return f'/movie/category/?genre={self.slug}'
 
 
 class Movie(BaseMovieModel):
@@ -33,6 +48,9 @@ class Movie(BaseMovieModel):
     country = models.CharField(max_length=34, choices=COUNTRY_CHOICES, verbose_name=_('country'))
     is_active = models.BooleanField(default=True)
 
+    default_manager = models.Manager()
+    objects = IsActiveManager()
+
     class Meta:
         verbose_name = _('Movie')
         verbose_name_plural = _('Movies')
@@ -44,10 +62,40 @@ class Movie(BaseMovieModel):
     def get_absolute_url(self):
         return reverse('movie:detail', args=[self.slug])
 
+    def get_comments(self):
+        return self.comments.filter(is_active=True)
+
+    def get_comment_count(self):
+        return self.comments.filter(is_active=True).count()
+
+    def get_reviews(self):
+        return self.reviews.filter(is_active=True)
+
+    def get_review_count(self):
+        return self.reviews.filter(is_active=True).count()
+
+    def get_avg_rate(self):
+        rate = self.reviews.all().aggregate(avg_rate=Avg('rate'))
+        if rate['avg_rate']:
+            return round(rate['avg_rate'], 1)
+        return 8
+
+    @classmethod
+    def get_favorites(cls):
+        return cls.objects.all().annotate(favorite_count=Count('favorites')).order_by('-favorite_count')[:12]
+
+    @classmethod
+    def get_all_favorites(cls):
+        return cls.objects.all().annotate(favorite_count=Count('favorites')).order_by('-favorite_count')
+
+    @classmethod
+    def get_news(cls):
+        return cls.objects.all()[:12]
+
 
 class MovieGenre(models.Model):
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='genres', verbose_name=_('genre'))
-    genre = models.CharField(max_length=34, choices=GENRE_CHOICES, verbose_name=_('genre'))
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='genres', verbose_name=_('movie'))
+    genre = models.ForeignKey(Genre, on_delete=models.CASCADE, related_name='movies', verbose_name=_('genre'))
 
     def __str__(self):
         return f'{self.movie}-{self.genre}'
@@ -107,7 +155,9 @@ class SeasonPart(BaseMovieModel):
     season = models.ForeignKey(SeriesSeason, on_delete=models.CASCADE, related_name='parts',
                                verbose_name=_('Season Part'))
     name = models.CharField(max_length=64, verbose_name=_('name'))
-    # poster = models.ImageField(verbose_name=_('poster'))
+    poster = models.ImageField(verbose_name=_('poster'))
+    # TODO: below is true and up is false
+    # image_cover = models.ImageField(verbose_name=_('image cover'))
     part = models.PositiveSmallIntegerField(verbose_name=_('part'))
 
     class Meta:
@@ -117,6 +167,9 @@ class SeasonPart(BaseMovieModel):
 
     def __str__(self):
         return f'{self.season} -- part: {self.part}'
+
+    def get_absolute_url(self):
+        return reverse('movie:part_detail', args=[self.pk, self.season.series.slug])
 
 
 class SeasonPartSubtitle(models.Model):
@@ -154,7 +207,10 @@ class MovieComment(BaseMovieModel):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='children',
                                verbose_name=_('parent'), null=True, blank=True)
     is_reply = models.BooleanField(default=False, verbose_name=_('is reply'))
-    is_active = models.BooleanField(default=True, verbose_name=_('is active'))
+    is_active = models.BooleanField(default=False, verbose_name=_('is active'))
+
+    default_manager = models.Manager()
+    objects = IsActiveManager()
 
     class Meta:
         verbose_name = _('Movie Comment')
@@ -184,7 +240,10 @@ class MovieReview(BaseMovieModel):
     rate = models.PositiveSmallIntegerField(choices=RATE_CHOICES, verbose_name=_('rate'))
     subject = models.CharField(max_length=120, verbose_name=_('subject'))
     description = models.TextField(verbose_name=_('body'))
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
+
+    default_manager = models.Manager()
+    objects = IsActiveManager()
 
     class Meta:
         verbose_name = _('Movie Review')
@@ -232,3 +291,30 @@ class FavoriteMovie(BaseMovieModel):
 
     def __str__(self):
         return f'{self.user} - {self.movie}'
+
+
+class MovieView(models.Model):
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='views')
+    user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, related_name='views', null=True, blank=True)
+
+    class Meta:
+        verbose_name = _('Movie View')
+        verbose_name_plural = _('Movie Views')
+
+    def __str__(self):
+        return f'{self.movie} : {self.user}'
+
+
+class SliderMovie(models.Model):
+    movie = models.OneToOneField(Movie, on_delete=models.CASCADE, related_name='slider', verbose_name=_('movie'))
+    title = models.CharField(max_length=64, verbose_name=_('title'))
+    image = models.ImageField(verbose_name=_('image'))
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = _('Slider Movie')
+        verbose_name_plural = _('Slider Movies')
+        ordering = ('-created',)
+
+    def __str__(self):
+        return f'{self.movie}'
