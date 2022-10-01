@@ -2,8 +2,8 @@ FILM = 1
 SERIES = 2
 
 TYPE_CHOICES = (
-    (FILM, 'film'),
-    (SERIES, 'series'),
+    (FILM, 'فیلم'),
+    (SERIES, 'سریال'),
 )
 
 ORIGIN_QUALITY = 1

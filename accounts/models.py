@@ -49,6 +49,8 @@ class User(AbstractBaseUser, SoftDelete):
     is_admin = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
     role = models.PositiveSmallIntegerField(choices=ROLE_CHOICES, default=Member, verbose_name=_('role'))
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     default_manager = AdminManager()
     objects = UserManager()
@@ -73,3 +75,10 @@ class User(AbstractBaseUser, SoftDelete):
         if self.role == 3:
             return True
         return False
+
+    def get_fullname(self):
+        return f"{self.first_name} {self.last_name}"
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('panel:user_edit', args=[self.pk])

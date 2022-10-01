@@ -92,6 +92,10 @@ class Movie(BaseMovieModel):
     def get_news(cls):
         return cls.objects.all()[:12]
 
+    @classmethod
+    def get_best_rates(cls):
+        return cls.default_manager.all().annotate(avg_rate=Sum('reviews__rate')).order_by('-avg_rate')
+
 
 class MovieGenre(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='genres', verbose_name=_('movie'))
@@ -102,6 +106,7 @@ class MovieGenre(models.Model):
 
 
 class FilmMovie(Movie):
+
     class Meta:
         proxy = True
 
@@ -207,6 +212,7 @@ class MovieComment(BaseMovieModel):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='children',
                                verbose_name=_('parent'), null=True, blank=True)
     is_reply = models.BooleanField(default=False, verbose_name=_('is reply'))
+    is_read = models.BooleanField(default=False, verbose_name=_('is read'))
     is_active = models.BooleanField(default=False, verbose_name=_('is active'))
 
     default_manager = models.Manager()
@@ -240,7 +246,8 @@ class MovieReview(BaseMovieModel):
     rate = models.PositiveSmallIntegerField(choices=RATE_CHOICES, verbose_name=_('rate'))
     subject = models.CharField(max_length=120, verbose_name=_('subject'))
     description = models.TextField(verbose_name=_('body'))
-    is_active = models.BooleanField(default=False)
+    is_read = models.BooleanField(default=False, verbose_name=_('is read'))
+    is_active = models.BooleanField(default=False, verbose_name=_('is active'))
 
     default_manager = models.Manager()
     objects = IsActiveManager()
@@ -248,6 +255,7 @@ class MovieReview(BaseMovieModel):
     class Meta:
         verbose_name = _('Movie Review')
         verbose_name_plural = _('Movie Reviews')
+        ordering = ('-created',)
 
     def __str__(self):
         return f'{self.user} - {self.movie} - {self.rate}'
@@ -293,7 +301,7 @@ class FavoriteMovie(BaseMovieModel):
         return f'{self.user} - {self.movie}'
 
 
-class MovieView(models.Model):
+class MovieView(BaseMovieModel):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='views')
     user = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, related_name='views', null=True, blank=True)
 

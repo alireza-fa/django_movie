@@ -4,17 +4,10 @@ from django.urls import reverse_lazy
 from django.views.generic import View, DetailView, FormView, ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from .models import Movie, MovieComment, MovieReview, SeasonPart, Genre
+from .models import Movie, MovieComment, MovieReview, SeasonPart, Genre, MovieView
 from core.forms import MagazineForm
 from .forms import CommentMovieForm, ReviewMovieForm
 from .actions import category_action
-
-
-class MovieView(View):
-    template_name = 'movie/movie.html'
-
-    def get(self, request):
-        return render(request, self.template_name)
 
 
 class MovieDetailView(DetailView, FormView):
@@ -22,6 +15,15 @@ class MovieDetailView(DetailView, FormView):
     template_name = 'movie/detail.html'
     slug_field = 'slug'
     slug_url_kwarg = 'slug'
+    queryset = Movie.objects.all()
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            view = MovieView.objects.filter(user=request.user, movie=self.get_object())
+            movie = self.get_object()
+            if not view and movie:
+                MovieView.objects.create(user=request.user, movie=self.get_object())
+        return super().dispatch(request, *args, **kwargs)
 
     def get_form_class(self):
         form_class = self.request.POST.get('form_class')

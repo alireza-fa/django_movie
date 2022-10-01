@@ -2,6 +2,8 @@
 
 {% load static %}
 
+{% load panel_filters %}
+
 {% block title %}داشبورد مدریت{% endblock %}
 
 {% block content %}
@@ -15,7 +17,7 @@
 					<div class="main__title">
 						<h2>داشبورد</h2>
 
-						<a href="add-item.html" class="main__title-link">افزودن آیتم</a>
+						<a href="/admin/" class="main__title-link">مدریت جدول ها</a>
 					</div>
 				</div>
 				<!-- end main title -->
@@ -24,7 +26,7 @@
 				<div class="col-12 col-sm-6 col-xl-3">
 					<div class="stats">
 						<span>نماهای منحصر به فرد در این ماه</span>
-						<p>5,678</p>
+						<p>{{ "view_count"|action_panel|floatformat:"-3g" }}</p>
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21.92,11.6C19.9,6.91,16.1,4,12,4S4.1,6.91,2.08,11.6a1,1,0,0,0,0,.8C4.1,17.09,7.9,20,12,20s7.9-2.91,9.92-7.6A1,1,0,0,0,21.92,11.6ZM12,18c-3.17,0-6.17-2.29-7.9-6C5.83,8.29,8.83,6,12,6s6.17,2.29,7.9,6C18.17,15.71,15.17,18,12,18ZM12,8a4,4,0,1,0,4,4A4,4,0,0,0,12,8Zm0,6a2,2,0,1,1,2-2A2,2,0,0,1,12,14Z"/></svg>
 					</div>
 				</div>
@@ -34,7 +36,7 @@
 				<div class="col-12 col-sm-6 col-xl-3">
 					<div class="stats">
 						<span>موارد اضافه شده در این ماه</span>
-						<p>172</p>
+						<p>{{ "item_count"|action_panel|floatformat:"-3g" }}</p>
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10,13H4a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V14A1,1,0,0,0,10,13ZM9,19H5V15H9ZM20,3H14a1,1,0,0,0-1,1v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V4A1,1,0,0,0,20,3ZM19,9H15V5h4Zm1,7H18V14a1,1,0,0,0-2,0v2H14a1,1,0,0,0,0,2h2v2a1,1,0,0,0,2,0V18h2a1,1,0,0,0,0-2ZM10,3H4A1,1,0,0,0,3,4v6a1,1,0,0,0,1,1h6a1,1,0,0,0,1-1V4A1,1,0,0,0,10,3ZM9,9H5V5H9Z"/></svg>
 					</div>
 				</div>
@@ -44,7 +46,7 @@
 				<div class="col-12 col-sm-6 col-xl-3">
 					<div class="stats">
 						<span>نظرات جدید</span>
-						<p>2,573</p>
+						<p>{{ "comment_count"|action_panel|floatformat:"-3g" }}</p>
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8,11a1,1,0,1,0,1,1A1,1,0,0,0,8,11Zm4,0a1,1,0,1,0,1,1A1,1,0,0,0,12,11Zm4,0a1,1,0,1,0,1,1A1,1,0,0,0,16,11ZM12,2A10,10,0,0,0,2,12a9.89,9.89,0,0,0,2.26,6.33l-2,2a1,1,0,0,0-.21,1.09A1,1,0,0,0,3,22h9A10,10,0,0,0,12,2Zm0,18H5.41l.93-.93a1,1,0,0,0,.3-.71,1,1,0,0,0-.3-.7A8,8,0,1,1,12,20Z"/></svg>
 					</div>
 				</div>
@@ -53,8 +55,8 @@
 				<!-- stats -->
 				<div class="col-12 col-sm-6 col-xl-3">
 					<div class="stats">
-						<span>امتیازات جدید</span>
-						<p>1,021</p>
+						<span>امتیازات</span>
+						<p>{{ "review_count"|action_panel|floatformat:"-3g" }}</p>
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Zm-6.15,4a1,1,0,0,0-.29.88l.72,4.2-3.76-2a1.06,1.06,0,0,0-.94,0l-3.76,2,.72-4.2a1,1,0,0,0-.29-.88l-3-3,4.21-.61a1,1,0,0,0,.76-.55L12,5.7l1.88,3.82a1,1,0,0,0,.76.55l4.21.61Z"/></svg>
 					</div>
 				</div>
@@ -68,7 +70,6 @@
 
 							<div class="dashbox__wrap">
 								<a class="dashbox__refresh" href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21,11a1,1,0,0,0-1,1,8.05,8.05,0,1,1-2.22-5.5h-2.4a1,1,0,0,0,0,2h4.53a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4.77A10,10,0,1,0,22,12,1,1,0,0,0,21,11Z"/></svg></a>
-								<a class="dashbox__more" href="catalog.html">نمایش همه</a>
 							</div>
 						</div>
 
@@ -83,76 +84,23 @@
 									</tr>
 								</thead>
 								<tbody>
+									{% for item in "best_items"|action_panel %}
 									<tr>
 										<td>
-											<div class="main__table-text">321</div>
+											<div class="main__table-text">{{ item.id }}</div>
 										</td>
 										<td>
-											<div class="main__table-text"><a href="#">لورم ایپسوم متن</a></div>
+											<div class="main__table-text"><a href="{{ item.get_absolute_url }}">{{ item.name|truncatechars:"35" }}</a></div>
 										</td>
 										<td>
-											<div class="main__table-text">فیلم</div>
+											<div class="main__table-text">{{ item.get_type_display }}</div>
 										</td>
 										<td>
-											<div class="main__table-text main__table-text--rate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Zm-6.15,4a1,1,0,0,0-.29.88l.72,4.2-3.76-2a1.06,1.06,0,0,0-.94,0l-3.76,2,.72-4.2a1,1,0,0,0-.29-.88l-3-3,4.21-.61a1,1,0,0,0,.76-.55L12,5.7l1.88,3.82a1,1,0,0,0,.76.55l4.21.61Z"/></svg> 9.2</div>
+											<div class="main__table-text main__table-text--rate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Zm-6.15,4a1,1,0,0,0-.29.88l.72,4.2-3.76-2a1.06,1.06,0,0,0-.94,0l-3.76,2,.72-4.2a1,1,0,0,0-.29-.88l-3-3,4.21-.61a1,1,0,0,0,.76-.55L12,5.7l1.88,3.82a1,1,0,0,0,.76.55l4.21.61Z"/></svg>
+												{{ item.get_avg_rate }}</div>
 										</td>
 									</tr>
-									<tr>
-										<td>
-											<div class="main__table-text">54</div>
-										</td>
-										<td>
-											<div class="main__table-text"><a href="#">لورم ایپسوم متن</a></div>
-										</td>
-										<td>
-											<div class="main__table-text">فیلم</div>
-										</td>
-										<td>
-											<div class="main__table-text main__table-text--rate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Zm-6.15,4a1,1,0,0,0-.29.88l.72,4.2-3.76-2a1.06,1.06,0,0,0-.94,0l-3.76,2,.72-4.2a1,1,0,0,0-.29-.88l-3-3,4.21-.61a1,1,0,0,0,.76-.55L12,5.7l1.88,3.82a1,1,0,0,0,.76.55l4.21.61Z"/></svg> 9.1</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="main__table-text">670</div>
-										</td>
-										<td>
-											<div class="main__table-text"><a href="#">لورم ایپسوم متن</a></div>
-										</td>
-										<td>
-											<div class="main__table-text">نمایش تلویزیونی</div>
-										</td>
-										<td>
-											<div class="main__table-text main__table-text--rate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Zm-6.15,4a1,1,0,0,0-.29.88l.72,4.2-3.76-2a1.06,1.06,0,0,0-.94,0l-3.76,2,.72-4.2a1,1,0,0,0-.29-.88l-3-3,4.21-.61a1,1,0,0,0,.76-.55L12,5.7l1.88,3.82a1,1,0,0,0,.76.55l4.21.61Z"/></svg> 9.0</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="main__table-text">241</div>
-										</td>
-										<td>
-											<div class="main__table-text"><a href="#">لورم ایپسوم متن</a></div>
-										</td>
-										<td>
-											<div class="main__table-text">نمایش تلویزیونی</div>
-										</td>
-										<td>
-											<div class="main__table-text main__table-text--rate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Zm-6.15,4a1,1,0,0,0-.29.88l.72,4.2-3.76-2a1.06,1.06,0,0,0-.94,0l-3.76,2,.72-4.2a1,1,0,0,0-.29-.88l-3-3,4.21-.61a1,1,0,0,0,.76-.55L12,5.7l1.88,3.82a1,1,0,0,0,.76.55l4.21.61Z"/></svg> 8.9</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="main__table-text">22</div>
-										</td>
-										<td>
-											<div class="main__table-text"><a href="#">لورم ایپسوم متن</a></div>
-										</td>
-										<td>
-											<div class="main__table-text">نمایش تلویزیونی</div>
-										</td>
-										<td>
-											<div class="main__table-text main__table-text--rate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Zm-6.15,4a1,1,0,0,0-.29.88l.72,4.2-3.76-2a1.06,1.06,0,0,0-.94,0l-3.76,2,.72-4.2a1,1,0,0,0-.29-.88l-3-3,4.21-.61a1,1,0,0,0,.76-.55L12,5.7l1.88,3.82a1,1,0,0,0,.76.55l4.21.61Z"/></svg> 8.9</div>
-										</td>
-									</tr>
+									{% endfor %}
 								</tbody>
 							</table>
 						</div>
@@ -168,7 +116,6 @@
 
 							<div class="dashbox__wrap">
 								<a class="dashbox__refresh" href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21,11a1,1,0,0,0-1,1,8.05,8.05,0,1,1-2.22-5.5h-2.4a1,1,0,0,0,0,2h4.53a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4.77A10,10,0,1,0,22,12,1,1,0,0,0,21,11Z"/></svg></a>
-								<a class="dashbox__more" href="catalog.html">نمایش همه</a>
 							</div>
 						</div>
 
@@ -183,76 +130,26 @@
 									</tr>
 								</thead>
 								<tbody>
+								{% for item in "last_items"|action_panel %}
 									<tr>
 										<td>
-											<div class="main__table-text">26</div>
+											<div class="main__table-text">{{ item.id }}</div>
 										</td>
 										<td>
-											<div class="main__table-text"><a href="#">لورم ایپسوم متن</a></div>
+											<div class="main__table-text"><a href="{{ item.get_absolute_url }}">{{ item.name|truncatechars:"35" }}</a></div>
 										</td>
 										<td>
-											<div class="main__table-text">فیلم</div>
+											<div class="main__table-text">{{ item.get_type_display }}</div>
 										</td>
 										<td>
+											{% if item.is_active %}
 											<div class="main__table-text main__table-text--green">قابل رویت</div>
+											{% else %}
+											<div class="main__table-text main__table-text--red">غیر قابل رویت</div>
+											{% endif %}
 										</td>
 									</tr>
-									<tr>
-										<td>
-											<div class="main__table-text">25</div>
-										</td>
-										<td>
-											<div class="main__table-text"><a href="#">لورم ایپسوم متن</a></div>
-										</td>
-										<td>
-											<div class="main__table-text">فیلم</div>
-										</td>
-										<td>
-											<div class="main__table-text main__table-text--green">قابل رویت</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="main__table-text">24</div>
-										</td>
-										<td>
-											<div class="main__table-text"><a href="#">لورم ایپسوم متن</a></div>
-										</td>
-										<td>
-											<div class="main__table-text">نمایش تلویزیونی</div>
-										</td>
-										<td>
-											<div class="main__table-text main__table-text--green">قابل رویت</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="main__table-text">23</div>
-										</td>
-										<td>
-											<div class="main__table-text"><a href="#">لورم ایپسوم متن</a></div>
-										</td>
-										<td>
-											<div class="main__table-text">نمایش تلویزیونی</div>
-										</td>
-										<td>
-											<div class="main__table-text main__table-text--green">قابل رویت</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="main__table-text">22</div>
-										</td>
-										<td>
-											<div class="main__table-text"><a href="#">لورم ایپسوم متن</a></div>
-										</td>
-										<td>
-											<div class="main__table-text">نمایش تلویزیونی</div>
-										</td>
-										<td>
-											<div class="main__table-text main__table-text--green">قابل رویت</div>
-										</td>
-									</tr>
+								{% endfor %}
 								</tbody>
 							</table>
 						</div>
@@ -268,7 +165,7 @@
 
 							<div class="dashbox__wrap">
 								<a class="dashbox__refresh" href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21,11a1,1,0,0,0-1,1,8.05,8.05,0,1,1-2.22-5.5h-2.4a1,1,0,0,0,0,2h4.53a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4.77A10,10,0,1,0,22,12,1,1,0,0,0,21,11Z"/></svg></a>
-								<a class="dashbox__more" href="users.html">نمایش همه</a>
+								<a class="dashbox__more" href="{% url 'panel:users' %}">نمایش همه</a>
 							</div>
 						</div>
 
@@ -283,76 +180,22 @@
 									</tr>
 								</thead>
 								<tbody>
+								{% for user in "last_users"|action_panel %}
 									<tr>
 										<td>
-											<div class="main__table-text">23</div>
+											<div class="main__table-text">{{ user.id }}</div>
 										</td>
 										<td>
-											<div class="main__table-text"><a href="#">ابوالفضل قاسمی</a></div>
+											<div class="main__table-text"><a href="{{ user.get_absolute_url }}">{{ user.get_fullname }}</a></div>
 										</td>
 										<td>
-											<div class="main__table-text main__table-text--grey">email@email.com</div>
+											<div class="main__table-text main__table-text--grey">{{ user.email }}</div>
 										</td>
 										<td>
-											<div class="main__table-text">user123</div>
+											<div class="main__table-text">{{ user.username }}</div>
 										</td>
 									</tr>
-									<tr>
-										<td>
-											<div class="main__table-text">22</div>
-										</td>
-										<td>
-											<div class="main__table-text"><a href="#">ابوالفضل قاسمی</a></div>
-										</td>
-										<td>
-											<div class="main__table-text main__table-text--grey">email@email.com</div>
-										</td>
-										<td>
-											<div class="main__table-text">user123</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="main__table-text">21</div>
-										</td>
-										<td>
-											<div class="main__table-text"><a href="#">ابوالفضل قاسمی</a></div>
-										</td>
-										<td>
-											<div class="main__table-text main__table-text--grey">email@email.com</div>
-										</td>
-										<td>
-											<div class="main__table-text">user123</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="main__table-text">20</div>
-										</td>
-										<td>
-											<div class="main__table-text"><a href="#">ابوالفضل قاسمی</a></div>
-										</td>
-										<td>
-											<div class="main__table-text main__table-text--grey">email@email.com</div>
-										</td>
-										<td>
-											<div class="main__table-text">user123</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="main__table-text">19</div>
-										</td>
-										<td>
-											<div class="main__table-text"><a href="#">ابوالفضل قاسمی</a></div>
-										</td>
-										<td>
-											<div class="main__table-text main__table-text--grey">email@email.com</div>
-										</td>
-										<td>
-											<div class="main__table-text">user123</div>
-										</td>
-									</tr>
+								{% endfor %}
 								</tbody>
 							</table>
 						</div>
@@ -368,7 +211,7 @@
 
 							<div class="dashbox__wrap">
 								<a class="dashbox__refresh" href="#"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21,11a1,1,0,0,0-1,1,8.05,8.05,0,1,1-2.22-5.5h-2.4a1,1,0,0,0,0,2h4.53a1,1,0,0,0,1-1V3a1,1,0,0,0-2,0V4.77A10,10,0,1,0,22,12,1,1,0,0,0,21,11Z"/></svg></a>
-								<a class="dashbox__more" href="reviews.html">نمایش همه</a>
+								<a class="dashbox__more" href="/admin/movie/moviereview/">نمایش همه</a>
 							</div>
 						</div>
 
@@ -379,80 +222,26 @@
 										<th>شناسه</th>
 										<th>عنوان</th>
 										<th>نویسنده</th>
-										<th>رتبه</th>
+										<th>امتیاز</th>
 									</tr>
 								</thead>
 								<tbody>
+								{% for review in "last_reviews"|action_panel %}
 									<tr>
 										<td>
-											<div class="main__table-text">51</div>
+											<div class="main__table-text">{{ review.id }}</div>
 										</td>
 										<td>
-											<div class="main__table-text"><a href="#">لورم ایپسوم متن</a></div>
+											<div class="main__table-text"><a href="/admin/movie/moviereview/{{ review.id }}/change/">{{ review.subject|truncatechars:"35" }}</a></div>
 										</td>
 										<td>
-											<div class="main__table-text">ابوالفضل قاسمی</div>
+											<div class="main__table-text">{{ review.user.username }}</div>
 										</td>
 										<td>
-											<div class="main__table-text main__table-text--rate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Zm-6.15,4a1,1,0,0,0-.29.88l.72,4.2-3.76-2a1.06,1.06,0,0,0-.94,0l-3.76,2,.72-4.2a1,1,0,0,0-.29-.88l-3-3,4.21-.61a1,1,0,0,0,.76-.55L12,5.7l1.88,3.82a1,1,0,0,0,.76.55l4.21.61Z"/></svg> 7.2</div>
+											<div class="main__table-text main__table-text--rate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Zm-6.15,4a1,1,0,0,0-.29.88l.72,4.2-3.76-2a1.06,1.06,0,0,0-.94,0l-3.76,2,.72-4.2a1,1,0,0,0-.29-.88l-3-3,4.21-.61a1,1,0,0,0,.76-.55L12,5.7l1.88,3.82a1,1,0,0,0,.76.55l4.21.61Z"/></svg> {{ review.rate }}</div>
 										</td>
 									</tr>
-									<tr>
-										<td>
-											<div class="main__table-text">50</div>
-										</td>
-										<td>
-											<div class="main__table-text"><a href="#">لورم ایپسوم متن</a></div>
-										</td>
-										<td>
-											<div class="main__table-text">ابوالفضل قاسمی</div>
-										</td>
-										<td>
-											<div class="main__table-text main__table-text--rate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Zm-6.15,4a1,1,0,0,0-.29.88l.72,4.2-3.76-2a1.06,1.06,0,0,0-.94,0l-3.76,2,.72-4.2a1,1,0,0,0-.29-.88l-3-3,4.21-.61a1,1,0,0,0,.76-.55L12,5.7l1.88,3.82a1,1,0,0,0,.76.55l4.21.61Z"/></svg> 6.3</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="main__table-text">49</div>
-										</td>
-										<td>
-											<div class="main__table-text"><a href="#">لورم ایپسوم متن</a></div>
-										</td>
-										<td>
-											<div class="main__table-text">ابوالفضل قاسمی</div>
-										</td>
-										<td>
-											<div class="main__table-text main__table-text--rate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Zm-6.15,4a1,1,0,0,0-.29.88l.72,4.2-3.76-2a1.06,1.06,0,0,0-.94,0l-3.76,2,.72-4.2a1,1,0,0,0-.29-.88l-3-3,4.21-.61a1,1,0,0,0,.76-.55L12,5.7l1.88,3.82a1,1,0,0,0,.76.55l4.21.61Z"/></svg> 8.4</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="main__table-text">48</div>
-										</td>
-										<td>
-											<div class="main__table-text"><a href="#">لورم ایپسوم متن</a></div>
-										</td>
-										<td>
-											<div class="main__table-text">ابوالفضل قاسمی</div>
-										</td>
-										<td>
-											<div class="main__table-text main__table-text--rate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Zm-6.15,4a1,1,0,0,0-.29.88l.72,4.2-3.76-2a1.06,1.06,0,0,0-.94,0l-3.76,2,.72-4.2a1,1,0,0,0-.29-.88l-3-3,4.21-.61a1,1,0,0,0,.76-.55L12,5.7l1.88,3.82a1,1,0,0,0,.76.55l4.21.61Z"/></svg> 9.0</div>
-										</td>
-									</tr>
-									<tr>
-										<td>
-											<div class="main__table-text">47</div>
-										</td>
-										<td>
-											<div class="main__table-text"><a href="#">لورم ایپسوم متن</a></div>
-										</td>
-										<td>
-											<div class="main__table-text">ابوالفضل قاسمی</div>
-										</td>
-										<td>
-											<div class="main__table-text main__table-text--rate"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22,9.67A1,1,0,0,0,21.14,9l-5.69-.83L12.9,3a1,1,0,0,0-1.8,0L8.55,8.16,2.86,9a1,1,0,0,0-.81.68,1,1,0,0,0,.25,1l4.13,4-1,5.68A1,1,0,0,0,6.9,21.44L12,18.77l5.1,2.67a.93.93,0,0,0,.46.12,1,1,0,0,0,.59-.19,1,1,0,0,0,.4-1l-1-5.68,4.13-4A1,1,0,0,0,22,9.67Zm-6.15,4a1,1,0,0,0-.29.88l.72,4.2-3.76-2a1.06,1.06,0,0,0-.94,0l-3.76,2,.72-4.2a1,1,0,0,0-.29-.88l-3-3,4.21-.61a1,1,0,0,0,.76-.55L12,5.7l1.88,3.82a1,1,0,0,0,.76.55l4.21.61Z"/></svg> 7.7</div>
-										</td>
-									</tr>
+								{% endfor %}
 								</tbody>
 							</table>
 						</div>

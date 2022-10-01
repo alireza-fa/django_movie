@@ -28,7 +28,7 @@ class FilmMovieAdmin(admin.ModelAdmin):
     inlines = (FilmLinkInline, FilmSubtitleInline, MovieGenreInline)
 
     def get_queryset(self, request):
-        return self.model.objects.filter(type=1)
+        return self.model.default_manager.filter(type=1)
 
 
 class SeriesSeasonInline(admin.StackedInline):
@@ -41,7 +41,7 @@ class SeriesMovieAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ('english_name',)}
 
     def get_queryset(self, request):
-        return self.model.objects.filter(type=2)
+        return self.model.default_manager.filter(type=2)
 
 
 class SeasonPartInline(admin.StackedInline):

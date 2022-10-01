@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.generic import TemplateView, ListView, View, UpdateView, FormView
+from django.views.generic import TemplateView, ListView, View, UpdateView
 from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 
@@ -7,6 +7,7 @@ from permissions import IsRequiredAdminMixin, IsRequiredSuperuserMixin
 from core.models import Contact
 from .actions import user_action, contact_action, user_delete_action
 from .forms import UserForm
+from movie.models import MovieComment, MovieReview
 
 
 class DashboardView(IsRequiredAdminMixin, TemplateView):
@@ -77,3 +78,15 @@ class ContactActionView(IsRequiredAdminMixin, View):
         action = self.request.GET.get('action')
         contact_action(request=request, action=action, pk=pk)
         return redirect('panel:contacts')
+
+
+class MovieCommentListView(IsRequiredAdminMixin, ListView):
+    model = MovieComment
+    template_name = 'panel/comments.html'
+    paginate_by = 15
+
+
+class MovieReviewListView(IsRequiredAdminMixin, ListView):
+    model = MovieReview
+    template_name = 'panel/reviews.html'
+    paginate_by = 15

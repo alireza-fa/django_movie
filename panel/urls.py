@@ -12,4 +12,6 @@ urlpatterns = [
     path('users/edit/<int:pk>/', views.UserEditView.as_view(), name='user_edit'),
     path('contacts/', views.ContactListView.as_view(), name='contacts'),
     path('contacts/action/<int:pk>/', views.ContactActionView.as_view(), name='contact_action'),
+    path('movie/comments/', views.MovieCommentListView.as_view(), name='movie_comments'),
+    path('movie/reviews/', views.MovieReviewListView.as_view(), name='movie_reviews'),
 ]
