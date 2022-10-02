@@ -20,42 +20,10 @@
                         <a class="header__nav-link" href="{% url 'core:home' %}">صفحه اصلی</a>
                     </li>
                     <li class="header__nav-item">
-                        <a class="header__nav-link" href="#" role="button" id="dropdownMenu1" data-toggle="dropdown"
-                           aria-haspopup="true" aria-expanded="false">کاتالوگ
-                            <svg width="4" height="4" viewBox="0 0 4 4" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1.93893 3.30334C1.08141 3.30334 0.384766 2.60669 0.384766 1.75047C0.384766 0.894254 1.08141 0.196308 1.93893 0.196308C2.79644 0.196308 3.49309 0.894254 3.49309 1.75047C3.49309 2.60669 2.79644 3.30334 1.93893 3.30334Z"/>
-                            </svg>
-                        </a>
-
-                        <ul class="dropdown-menu header__nav-menu" aria-labelledby="dropdownMenu1">
-                            <li><a href="catalog.html">کاتالوگ</a></li>
-                            <li class="dropdown-submenu">
-                                <a class="dropdown-item" href="#" role="button" id="dropdownMenuSub"
-                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">کاتالوگ با زیر
-                                    منو
-                                    <svg width="4" height="4" viewBox="0 0 4 4" fill="none"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M1.93893 3.30334C1.08141 3.30334 0.384766 2.60669 0.384766 1.75047C0.384766 0.894254 1.08141 0.196308 1.93893 0.196308C2.79644 0.196308 3.49309 0.894254 3.49309 1.75047C3.49309 2.60669 2.79644 3.30334 1.93893 3.30334Z"/>
-                                    </svg>
-                                </a>
-
-                                <ul class="dropdown-menu header__nav-menu" aria-labelledby="dropdownMenuSub">
-                                    <li><a href="category.html">اکشن</a></li>
-                                    <li><a href="category.html">بیوگرافی</a></li>
-                                    <li><a href="category.html">مستند</a></li>
-                                    <li><a href="category.html">ترسناک</a></li>
-                                </ul>
-                            </li>
-                            <li><a href="category.html">دسته بندی 1</a></li>
-                            <li><a href="category2.html">دسته بندی 2</a></li>
-                            <li><a href="details.html">جزئیات 1</a></li>
-                            <li><a href="details2.html">جزئیات 2</a></li>
-                            <li><a href="details3.html">جزئیات 3</a></li>
-                        </ul>
+                        <a class="header__nav-link" href="{% url 'movie:catalogue' %}">کاتالوگ</a>
                     </li>
                     <li class="header__nav-item">
-                        <a class="header__nav-link" href="pricing.html">خرید اشتراک</a>
+                        <a class="header__nav-link" href="{% url 'finance:plan' %}">خرید اشتراک</a>
                     </li>
                     {% if request.user.is_staff %}
                     <li class="header__nav-item">
