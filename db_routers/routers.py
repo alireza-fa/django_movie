@@ -1,5 +1,11 @@
 class MainRouter:
-    route_app_labels = {'auth', 'contenttypes', 'sessions', 'accounts', 'panel', 'social_django', 'movie', 'admin'}
+    route_app_labels = {
+        'auth', 'contenttypes',
+        'sessions', 'accounts',
+        'panel', 'social_django',
+        'movie', 'admin',
+        'finance',
+    }
 
     def db_for_read(self, model, **hints):
         if model._meta.app_label in self.route_app_labels:

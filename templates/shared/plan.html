@@ -1,3 +1,47 @@
+{% load finance_filters %}
+
+<form action="{% url 'finance:pay_plan' %}" method="post" id="modal-topup" class="zoom-anim-dialog modal modal--form mfp-hide">
+    {% csrf_token %}
+    <button class="modal__close" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13.41,12l4.3-4.29a1,1,0,1,0-1.42-1.42L12,10.59,7.71,6.29A1,1,0,0,0,6.29,7.71L10.59,12l-4.3,4.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0L12,13.41l4.29,4.3a1,1,0,0,0,1.42,0,1,1,0,0,0,0-1.42Z"></path>
+        </svg>
+    </button>
+
+    <h4 class="sign__title">خرید اشتراک جنگو مووی</h4>
+
+    <div class="sign__group sign__group--row">
+        <label class="sign__label">اعتبار فعلی :</label>
+        <span class="sign__value">50,000 تومان</span>
+    </div>
+
+    <div class="sign__group sign__group--row">
+        <label class="sign__label" for="value">انتخاب پلن :</label>
+        <select class="sign__select" name="value" id="value">
+            {% for plan in 'plans'|finance_actions %}
+            <option name="plan" value="{{ plan.id }}"> {{ plan.name }} {{ plan.get_price }} تومان </option>
+            {% endfor %}
+        </select>
+
+        <span class="sign__text sign__text--small">لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است.</span>
+    </div>
+
+    <div class="sign__group sign__group--row">
+        <label class="sign__label">روش پرداخت :</label>
+
+        <ul class="sign__radio">
+            {% for gateway in 'gateways'|finance_actions %}
+            <li>
+                <input id="type{{ gateway.id }}" type="radio" name="gateway" value="{{ gateway.id }}" checked>
+                <label for="type{{ gateway.id }}">{{ gateway.get_name_display }}</label>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <button class="sign__btn" type="submit">خرید اشتراک</button>
+</form>
+
 <section class="section section--pb0 section--gradient">
     <div class="container">
         <div class="row">
@@ -8,82 +52,26 @@
         </div>
 
         <div dir="rtl" class="row">
-            <div class="col-12 col-md-6 col-xl-4 order-md-2 order-xl-1">
-                <div class="plan plan--style2">
-                    <h3 class="plan__title">پایه</h3>
-                    <span class="plan__price">50,000 ت <span>/ ماهانه </span></span>
-                    <ul class="plan__list">
-                        <li class="green">
-                            <svg width="19" height="14" viewBox="0 0 19 14" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1.43994 6.95981L6.77477 12.2924L17.4399 1.62723" stroke-width="2"
-                                      stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            فلیکس تی وی اصل
-                        </li>
-                        <li class="green">
-                            <svg width="19" height="14" viewBox="0 0 19 14" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1.43994 6.95981L6.77477 12.2924L17.4399 1.62723" stroke-width="2"
-                                      stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            جا به جایی بین پلن یا لغو در هر زمان
-                        </li>
-                        <li class="red">
-                            <svg width="19" height="19" viewBox="0 0 19 19" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path d="M17.596 1.59982L1.60938 17.5865" stroke-width="2" stroke-linecap="round"
-                                      stroke-linejoin="round"/>
-                                <path d="M17.601 17.5961L1.60101 1.5928" stroke-width="2" stroke-linecap="round"
-                                      stroke-linejoin="round"/>
-                            </svg>
-                            +65 پخش زنده برتر
-                        </li>
-                        <li class="red">
-                            <svg width="19" height="19" viewBox="0 0 19 19" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path d="M17.596 1.59982L1.60938 17.5865" stroke-width="2" stroke-linecap="round"
-                                      stroke-linejoin="round"/>
-                                <path d="M17.601 17.5961L1.60101 1.5928" stroke-width="2" stroke-linecap="round"
-                                      stroke-linejoin="round"/>
-                            </svg>
-                            کانال های تلویزیونی
-                        </li>
-                    </ul>
+            {% for plan in 'plans'|finance_actions %}
 
-                    <button class="plan__btn" type="button">انتخاب پلن</button>
-                </div>
-            </div>
-
+            {% if plan.best_plan %}
             <div class="col-12 col-xl-4 order-md-1 order-xl-2">
                 <div class="plan plan--style2 plan--best">
-                    <h3 class="plan__title">حرفه ای</h3>
-                    <span class="plan__price">200,000 ت <span>/ ماهانه</span></span>
+                    <h3 class="plan__title">{{ plan.name }}</h3>
+                    <span class="plan__price">{{ plan.get_price|floatformat:"-3g" }} ت <span>/ {{ plan.get_per_display }}</span></span>
                     <ul class="plan__list">
+                        {% for attr in plan.attributes.all %}
+
+                        {% if attr.is_active %}
                         <li class="green">
                             <svg width="19" height="14" viewBox="0 0 19 14" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1.43994 6.95981L6.77477 12.2924L17.4399 1.62723" stroke-width="2"
                                       stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                            فلیکس تی وی اصل
+                            {{ attr.name }}
                         </li>
-                        <li class="green">
-                            <svg width="19" height="14" viewBox="0 0 19 14" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1.43994 6.95981L6.77477 12.2924L17.4399 1.62723" stroke-width="2"
-                                      stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            جا به جایی بین پلن یا لغو در هر زمان
-                        </li>
-                        <li class="green">
-                            <svg width="19" height="14" viewBox="0 0 19 14" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1.43994 6.95981L6.77477 12.2924L17.4399 1.62723" stroke-width="2"
-                                      stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            +65 پخش زنده برتر
-                        </li>
+                        {% else %}
                         <li class="red">
                             <svg width="19" height="19" viewBox="0 0 19 19" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
@@ -92,56 +80,62 @@
                                 <path d="M17.601 17.5961L1.60101 1.5928" stroke-width="2" stroke-linecap="round"
                                       stroke-linejoin="round"/>
                             </svg>
-                            کانال های تلویزیونی
+                            {{ attr.name }}
                         </li>
-                    </ul>
+                        {% endif %}
 
-                    <button class="plan__btn" type="button">انتخاب پلن</button>
+                        {% endfor %}
+                    </ul>
+                    {% if request.user.is_authenticated %}
+                    <a class="plan__btn open-modal" href="#modal-topup">انتخاب پلن</a>
+                    {% else %}
+                    <a class="plan__btn" href="{% url 'accounts:login' %}">اول وارد حسابت خود شوید</a>
+                    {% endif %}
                 </div>
             </div>
-
-            <div class="col-12 col-md-6 col-xl-4 order-md-3 order-xl-3">
+            {% else %}
+            <div class="col-12 col-md-6 col-xl-4 order-md-2 order-xl-1">
                 <div class="plan plan--style2">
-                    <h3 class="plan__title">حرفه ای + کانال های تلویزیونی</h3>
-                    <span class="plan__price">500,000 ت <span>/ ماهانه</span></span>
+                    <h3 class="plan__title">{{ plan.name }}</h3>
+                    <span class="plan__price">{{ plan.get_price|floatformat:"-3g" }} ت <span>/ {{ plan.get_per_display }}</span></span>
                     <ul class="plan__list">
+                        {% for attr in plan.attributes.all %}
+
+                        {% if attr.is_active %}
                         <li class="green">
                             <svg width="19" height="14" viewBox="0 0 19 14" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
                                 <path d="M1.43994 6.95981L6.77477 12.2924L17.4399 1.62723" stroke-width="2"
                                       stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                            فلیکس تی وی اصل
+                            {{ attr.name }}
                         </li>
-                        <li class="green">
-                            <svg width="19" height="14" viewBox="0 0 19 14" fill="none"
+                        {% else %}
+                        <li class="red">
+                            <svg width="19" height="19" viewBox="0 0 19 19" fill="none"
                                  xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1.43994 6.95981L6.77477 12.2924L17.4399 1.62723" stroke-width="2"
-                                      stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M17.596 1.59982L1.60938 17.5865" stroke-width="2" stroke-linecap="round"
+                                      stroke-linejoin="round"/>
+                                <path d="M17.601 17.5961L1.60101 1.5928" stroke-width="2" stroke-linecap="round"
+                                      stroke-linejoin="round"/>
                             </svg>
-                            جا به جایی بین پلن یا لغو در هر زمان
+                            {{ attr.name }}
                         </li>
-                        <li class="green">
-                            <svg width="19" height="14" viewBox="0 0 19 14" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1.43994 6.95981L6.77477 12.2924L17.4399 1.62723" stroke-width="2"
-                                      stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            +65 پخش زنده برتر
-                        </li>
-                        <li class="green">
-                            <svg width="19" height="14" viewBox="0 0 19 14" fill="none"
-                                 xmlns="http://www.w3.org/2000/svg">
-                                <path d="M1.43994 6.95981L6.77477 12.2924L17.4399 1.62723" stroke-width="2"
-                                      stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                            کانال های تلویزیونی
-                        </li>
+                        {% endif %}
+
+                        {% endfor %}
                     </ul>
 
-                    <button class="plan__btn" type="button">انتخاب پلن</button>
+                    {% if request.user.is_authenticated %}
+                    <a class="plan__btn open-modal" href="#modal-topup">انتخاب پلن</a>
+                    {% else %}
+                    <a class="plan__btn" href="{% url 'accounts:login' %}">اول وارد حسابت خود شوید</a>
+                    {% endif %}
                 </div>
             </div>
+            {% endif %}
+
+            {% endfor %}
         </div>
     </div>
 </section>
