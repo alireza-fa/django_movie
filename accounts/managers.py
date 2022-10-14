@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.contrib.auth.models import BaseUserManager
 from django.db.models import Q
 from django.utils import timezone
@@ -43,3 +45,8 @@ class UserManager(AdminManager):
 class SoftDeleteManager(Manager):
     def get_queryset(self):
         return super().get_queryset().filter(is_delete=True)
+
+
+class IsActiveAndValidExpireTimeManager(Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(is_active=True, expire_time__gte=datetime.now())

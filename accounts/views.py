@@ -1,9 +1,11 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render, redirect
-from django.views.generic import TemplateView, View
+from django.views.generic import View, ListView
 from django.contrib.auth import logout
 
-from .forms import LoginForm, RegisterForm, VerifyAccountForm, ForgetPasswordForm, ForgetPasswordVerifyForm
+from movie.models import Movie
+from .forms import (LoginForm, RegisterForm, VerifyAccountForm, ForgetPasswordForm,
+                    ForgetPasswordVerifyForm)
 from permissions import IsAnonymousHaveOTP, IsAnonymousMixin, ForgetPasswordVerifyMixin
 
 
@@ -88,5 +90,15 @@ class ForgetPasswordVerifyView(ForgetPasswordVerifyMixin, View):
         return render(request, self.template_name, {"form": form})
 
 
-class ProfileView(LoginRequiredMixin, TemplateView):
+class ProfileView(LoginRequiredMixin, ListView):
+    model = Movie
     template_name = 'accounts/profile.html'
+    paginate_by = 18
+
+    def get_queryset(self):
+        return Movie.objects.filter(favorites__user=self.request.user)
+
+    def get_context_data(self, *args, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['recommend_movies'] = Movie.get_recommend_movie(user=self.request.user)
+        return context

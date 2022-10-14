@@ -14,4 +14,5 @@ urlpatterns = [
     path('contacts/action/<int:pk>/', views.ContactActionView.as_view(), name='contact_action'),
     path('movie/comments/', views.MovieCommentListView.as_view(), name='movie_comments'),
     path('movie/reviews/', views.MovieReviewListView.as_view(), name='movie_reviews'),
+    path('catalog/', views.CatalogListView.as_view(), name='catalog'),
 ]

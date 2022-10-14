@@ -7,7 +7,7 @@ from permissions import IsRequiredAdminMixin, IsRequiredSuperuserMixin
 from core.models import Contact
 from .actions import user_action, contact_action, user_delete_action
 from .forms import UserForm
-from movie.models import MovieComment, MovieReview
+from movie.models import MovieComment, MovieReview, Movie
 
 
 class DashboardView(IsRequiredAdminMixin, TemplateView):
@@ -89,4 +89,11 @@ class MovieCommentListView(IsRequiredAdminMixin, ListView):
 class MovieReviewListView(IsRequiredAdminMixin, ListView):
     model = MovieReview
     template_name = 'panel/reviews.html'
+    paginate_by = 15
+
+
+class CatalogListView(ListView):
+    model = Movie
+    queryset = Movie.default_manager.all()
+    template_name = 'panel/catalog.html'
     paginate_by = 15

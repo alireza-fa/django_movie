@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Plan, PlanAttribute, Gateway, Payment, PlanDiscount, UserPlan
+from .models import Plan, PlanAttribute, Gateway, Payment, PlanDiscount
 
 
 class PlanAttributeInline(admin.TabularInline):
@@ -23,9 +23,4 @@ class GatewayAdmin(admin.ModelAdmin):
 
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
-    pass
-
-
-@admin.register(UserPlan)
-class UserPlanAdmin(admin.ModelAdmin):
     pass

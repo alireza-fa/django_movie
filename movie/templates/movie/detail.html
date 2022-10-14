@@ -21,12 +21,35 @@
 			<!-- article -->
 			<div class="article">
 				<div  class="row">
-					{% if not object.is_free %}
-						{% include 'movie/shared/not_free.html' %}
-					{% elif object.type == 1 %}
-						{% include 'movie/shared/film.html' %}
+					{% if object.type == 1 %}
+						{% if not object.is_free %}
+							{% if request.user.is_authenticated %}
+								{% if request.user.has_plan %}
+									{% include 'movie/shared/film.html' %}
+								{% else %}
+									{% include 'movie/shared/not_free.html' %}
+								{% endif %}
+							{% else %}
+								{% include 'movie/shared/not_free.html' %}
+							{% endif %}
+						{% else %}
+							{% include 'movie/shared/film.html' %}
+						{% endif %}
+
 					{% else %}
-						{% include 'movie/shared/series.html' %}
+						{% if not object.is_free %}
+							{% if request.user.is_authenticated %}
+								{% if request.user.has_plan %}
+									{% include 'movie/shared/series.html' %}
+								{% else %}
+									{% include 'movie/shared/not_free.html' %}
+								{% endif %}
+							{% else %}
+							{% include 'movie/shared/not_free.html' %}
+							{% endif %}
+						{% else %}
+							{% include 'movie/shared/series.html' %}
+						{% endif %}
 					{% endif %}
 				</div>
 

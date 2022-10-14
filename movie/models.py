@@ -96,6 +96,11 @@ class Movie(BaseMovieModel):
     def get_best_rates(cls):
         return cls.default_manager.all().annotate(avg_rate=Sum('reviews__rate')).order_by('-avg_rate')
 
+    @classmethod
+    def get_recommend_movie(cls, user):
+        genres = user.get_favorite_genres()
+        return cls.objects.filter(genres__genre__id__in=genres).distinct()[:5]
+
 
 class MovieGenre(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='genres', verbose_name=_('movie'))

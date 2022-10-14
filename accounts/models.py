@@ -1,10 +1,12 @@
+from datetime import datetime
+
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
-from .managers import UserManager, AdminManager, SoftDeleteManager
+from .managers import UserManager, AdminManager, SoftDeleteManager, IsActiveAndValidExpireTimeManager
 
 
 class SoftDelete(models.Model):
@@ -82,3 +84,47 @@ class User(AbstractBaseUser, SoftDelete):
     def get_absolute_url(self):
         from django.urls import reverse
         return reverse('panel:user_edit', args=[self.pk])
+
+    def has_plan(self):
+        return UserPremium.objects.filter(user=self).exists()
+
+    def get_plan_days(self):
+        premium = UserPremium.objects.filter(user=self)
+        if premium.exists():
+            premium = premium.first()
+            expire = premium.expire_time - datetime.now()
+            return expire.days
+        else:
+            premium.delete()
+            return 0
+
+    def get_comments(self):
+        return self.comments.filter(is_active=True)
+
+    def get_reviews(self):
+        return self.reviews.filter(is_active=True)
+
+    def get_last_reviews(self):
+        return self.reviews.filter(is_active=True)[:5]
+
+    def get_favorite_genres(self):
+        return self.favorites.filter(movie__is_active=True).values_list('movie__genres__genre__id',
+                                                                        flat=True).distinct()
+
+
+class UserPremium(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='premium', verbose_name=_('user'))
+    expire_time = models.DateTimeField(verbose_name=_('expire time'))
+    is_active = models.BooleanField(default=True, verbose_name=_('is active'))
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    default_manager = models.Manager()
+    objects = IsActiveAndValidExpireTimeManager()
+
+    class Meta:
+        verbose_name = _('User premium')
+        verbose_name_plural = _('User Premiums')
+
+    def __str__(self):
+        return f'{self.user} - {self.expire_time}'

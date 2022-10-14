@@ -3,7 +3,7 @@
     <div class="categories">
         <h3 class="categories__title">سبک ها</h3>
         {% for movie_genre in object.genres.all %}
-        <a href="category.html" class="categories__item">{{ movie_genre.genre.name }}</a>
+        <a href="{% url 'movie:category' %}?genre={{ movie_genre.genre.english_name }}" class="categories__item">{{ movie_genre.genre.name }}</a>
         {% endfor %}
     </div>
     <!-- end categories -->

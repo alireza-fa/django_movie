@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import UserPremium
+
+
+@admin.register(UserPremium)
+class UserPremiumAdmin(admin.ModelAdmin):
+    pass

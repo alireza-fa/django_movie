@@ -82,20 +82,23 @@ class PlanDiscount(models.Model):
         return f'{self.plan} - {self.discount}'
 
 
-class UserPlan(models.Model):
-    user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='plans', verbose_name=_('user'))
-    plan = models.ForeignKey(Plan, on_delete=models.RESTRICT, related_name='users', verbose_name=_('plan'))
-    expire_time = models.DateTimeField(verbose_name=_('expire time'))
-    is_active = models.BooleanField(default=True, verbose_name=_('is active'))
-    created = models.DateTimeField(auto_now_add=True)
-    modified = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        verbose_name = _('User Plan')
-        verbose_name_plural = _('User Plans')
-
-    def __str__(self):
-        return f'{self.user} - {self.plan.name} - is active: {self.is_active}'
+# class UserPlan(models.Model):
+#     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='plans', verbose_name=_('user'))
+#     plan = models.ForeignKey(Plan, on_delete=models.RESTRICT, related_name='users', verbose_name=_('plan'))
+#     expire_time = models.DateTimeField(verbose_name=_('expire time'))
+#     is_active = models.BooleanField(default=True, verbose_name=_('is active'))
+#     created = models.DateTimeField(auto_now_add=True)
+#     modified = models.DateTimeField(auto_now=True)
+#
+#     default_manager = models.Manager()
+#     objects = IsActiveAndValidExpireTimeManager()
+#
+#     class Meta:
+#         verbose_name = _('User Plan')
+#         verbose_name_plural = _('User Plans')
+#
+#     def __str__(self):
+#         return f'{self.user} - {self.plan.name} - is active: {self.is_active}'
 
 
 class Gateway(models.Model):
