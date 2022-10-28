@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'panel.apps.PanelConfig',
     'movie.apps.MovieConfig',
     'finance.apps.FinanceConfig',
+    'wallet.apps.WalletConfig',
     'api.apps.ApiConfig',
     # third party apps
     'social_django',
