@@ -5,7 +5,7 @@ from django.shortcuts import redirect
 
 from .utils import otp_code
 from .tasks import send_mail_task
-from convert_numbers import persian_to_english
+from utils.convert_numbers import persian_to_english
 from random import randint
 
 
