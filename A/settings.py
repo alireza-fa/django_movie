@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from A.local_settings import *
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,6 +40,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     # third party apps
     'social_django',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -187,3 +189,17 @@ AUTHENTICATION_BACKENDS = [
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 
 DATABASE_ROUTERS = ['db_routers.routers.MainRouter', 'db_routers.routers.SecondaryRouter']
+
+
+# DRF
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=20),
+}

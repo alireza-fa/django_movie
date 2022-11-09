@@ -16,6 +16,8 @@ defusedxml==0.7.1
 Django==3.2
 django-storages==1.13.1
 django-timezone-field==5.0
+djangorestframework==3.14.0
+djangorestframework-simplejwt==5.2.2
 idna==3.3
 jmespath==1.0.1
 kombu==5.2.4
