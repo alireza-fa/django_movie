@@ -21,7 +21,12 @@ class TokenJWTSerializer(serializers.Serializer):
 
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    # TODO: complete this class
     class Meta:
         model = get_user_model()
         fields = ('username', 'email', 'password')
+
+    def validate(self, attrs):
+        if attrs.get('username') and attrs.get('email') and attrs.get('password'):
+            # TODO: OTP CODE, SAVING TO CACHE
+            attrs['info_register'] = {"email": attrs['email']}
+        return attrs

@@ -5,8 +5,11 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from . import accounts_views
 
 
-accounts_urls = [
+app_name = 'api'
 
+
+accounts_urls = [
+    path('register/', accounts_views.UserRegisterView.as_view(), name='register')
 ]
 
 
