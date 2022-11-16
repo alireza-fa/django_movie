@@ -9,7 +9,9 @@ app_name = 'api'
 
 
 accounts_urls = [
-    path('register/', accounts_views.UserRegisterView.as_view(), name='register')
+    path('register/', accounts_views.UserRegisterView.as_view(), name='register'),
+    path('register/verify_email/', accounts_views.UserVerifyEmailTORegisterView.as_view(),
+         name='register_verify_email')
 ]
 
 
