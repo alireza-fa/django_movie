@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     # third party apps
     'social_django',
     'rest_framework',
-    'rest_framework_simplejwt.token_blacklist',
 ]
 
 MIDDLEWARE = [

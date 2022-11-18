@@ -4,7 +4,7 @@ class MainRouter:
         'sessions', 'accounts',
         'panel', 'social_django',
         'movie', 'admin',
-        'finance',
+        'finance', 'api',
     }
 
     def db_for_read(self, model, **hints):
@@ -32,7 +32,9 @@ class MainRouter:
 
 
 class SecondaryRouter:
-    route_app_labels = {'core', 'rest_framework_simplejwt.token_blacklist'}
+    route_app_labels = {
+        'core',
+    }
 
     def db_for_read(self, model, **hints):
         if model._meta.app_label in self.route_app_labels:

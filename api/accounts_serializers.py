@@ -1,5 +1,5 @@
 from rest_framework import serializers
-
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import authenticate, get_user_model
 from django.core.cache import cache
@@ -8,7 +8,9 @@ from .utils.jwt import get_token_for_user
 from accounts.utils import otp_code
 from utils.send_email import send_email
 from utils.convert_numbers import persian_to_english
+from .models import OutstandingToken, BlacklistedToken
 
+from datetime import datetime
 
 class TokenJWTSerializer(serializers.Serializer):
     info_login = serializers.CharField(max_length=199, label=_('username or email'))
@@ -89,4 +91,45 @@ class UserVerifyEmailToRegisterSerializer(serializers.Serializer):
             token = get_token_for_user(user)
             attrs['token'] = token
 
+        return attrs
+
+
+class UserLogoutSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OutstandingToken
+        fields = ('token', )
+
+    def validate(self, attrs):
+        if attrs.get('token'):
+            try:
+                token = RefreshToken(token=attrs['token'])
+
+            except TokenError:
+                raise serializers.ValidationError(_('Token is invalid or expired.'))
+
+            finally:
+                user = self.context['request'].user
+
+                if OutstandingToken.objects.filter(jti=token.get('jti'), user=user).exists():
+                    raise serializers.ValidationError(_('Token is invalid or expired.'))
+
+                iat = datetime.fromtimestamp(token.get('iat'))
+                exp = datetime.fromtimestamp(token.get('exp'))
+
+                outstanding = OutstandingToken.objects.create(
+                    user=user, jti=token.get('jti'),
+                    token=str(token), created_at=iat, expire_time=exp
+                )
+
+                BlacklistedToken.objects.create(token=outstanding)
+
+        return attrs
+
+
+class TokenRefreshSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
+
+    def validate(self, attrs):
+        if attrs.get('refresh'):
+            pass
         return attrs

@@ -1,3 +1,6 @@
 from django.contrib import admin
+from .models import OutstandingToken, BlacklistedToken
 
-# Register your models here.
+
+admin.site.register(OutstandingToken)
+admin.site.register(BlacklistedToken)
