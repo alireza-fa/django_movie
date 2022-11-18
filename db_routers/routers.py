@@ -32,7 +32,7 @@ class MainRouter:
 
 
 class SecondaryRouter:
-    route_app_labels = {'core'}
+    route_app_labels = {'core', 'rest_framework_simplejwt.token_blacklist'}
 
     def db_for_read(self, model, **hints):
         if model._meta.app_label in self.route_app_labels:
