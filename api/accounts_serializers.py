@@ -130,6 +130,14 @@ class TokenRefreshSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 
     def validate(self, attrs):
-        if attrs.get('refresh'):
-            pass
+        try:
+            token = RefreshToken(token=attrs['refresh'])
+        except TokenError:
+            raise serializers.ValidationError(_('Token is invalid or expired.'))
+
+        if BlacklistedToken.objects.filter(token__token=str(token)).exists():
+            raise serializers.ValidationError(_('Token is invalid or expired.'))
+
+        attrs['access_token'] = {"access": str(token.access_token)}
+
         return attrs

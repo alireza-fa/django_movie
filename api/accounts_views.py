@@ -1,7 +1,5 @@
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from django.views.generic.base import View
-from rest_framework_simplejwt.tokens import OutstandingToken, RefreshToken, Token
 
 from .accounts_serializers import (TokenJWTSerializer, UserRegisterSerializer, UserVerifyEmailToRegisterSerializer,
                                    UserLogoutSerializer, TokenRefreshSerializer,
@@ -39,12 +37,11 @@ class UserLogoutView(PostView):
 
 
 class TokenRefreshView(PostView):
-    permission_classes = (IsAuthenticated, )
     serializer_class = TokenRefreshSerializer
+    filter_data_to_response = 'access_token'
     status = status.HTTP_200_OK
 
 
 # TODO: user profile
 # TODO: search
 # TODO: Checking blacklist before create access token or authentication refresh token (str(token.access_token_class))
-

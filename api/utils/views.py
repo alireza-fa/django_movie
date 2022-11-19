@@ -33,5 +33,5 @@ class PostView(APIView):
         elif self.filter_data_to_response:
             return Response(data=serializer.validated_data.get(self.filter_data_to_response), status=self.status)
         elif self.no_content:
-            Response(status=self.status)
+            return Response(status=self.status)
         return Response(data=serializer.validated_data, status=self.status)
