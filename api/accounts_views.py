@@ -1,5 +1,6 @@
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
 
 from .accounts_serializers import (TokenJWTSerializer, UserRegisterSerializer, UserVerifyEmailToRegisterSerializer,
                                    UserLogoutSerializer, TokenRefreshSerializer,
@@ -44,4 +45,3 @@ class TokenRefreshView(PostView):
 
 # TODO: user profile
 # TODO: search
-# TODO: Checking blacklist before create access token or authentication refresh token (str(token.access_token_class))
