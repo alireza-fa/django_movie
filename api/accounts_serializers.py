@@ -17,12 +17,11 @@ class TokenJWTSerializer(serializers.Serializer):
     password = serializers.CharField(max_length=128)
 
     def validate(self, attrs):
-        if attrs.get('info_login') and attrs.get('password'):
-            user = authenticate(username=attrs.get('info_login'), password=attrs.get('password'))
-            if not user:
-                raise serializers.ValidationError(_('Not found any user this information.'))
-            token = get_token_for_user(user)
-            attrs['token'] = token
+        user = authenticate(username=attrs.get('info_login'), password=attrs.get('password'))
+        if not user:
+            raise serializers.ValidationError(_('Not found any user this information.'))
+        token = get_token_for_user(user)
+        attrs['token'] = token
         return attrs
 
 
@@ -32,30 +31,28 @@ class UserRegisterSerializer(serializers.ModelSerializer):
         fields = ('username', 'email', 'password')
 
     def validate(self, attrs):
-        if attrs.get('username') and attrs.get('email') and attrs.get('password'):
+        trying_count = cache.get(f'{attrs["email"]}-try')
+        if not trying_count:
+            cache.set(key=f'{attrs["email"]}-try', value=1, timeout=86400)
+        else:
+            if trying_count > 10:
+                raise serializers.ValidationError(_('limit!! please try 24 hours later.'))
+            cache.incr(key=f'{attrs["email"]}-try')
 
-            trying_count = cache.get(f'{attrs["email"]}-try')
-            if not trying_count:
-                cache.set(key=f'{attrs["email"]}-try', value=1, timeout=86400)
-            else:
-                if trying_count > 10:
-                    raise serializers.ValidationError(_('limit!! please try 24 hours later.'))
-                cache.incr(key=f'{attrs["email"]}-try')
+        code = otp_code()
 
-            code = otp_code()
+        cache.set(
+            key=attrs['email'],
+            value={
+                "code": code,
+                "username": attrs['username'],
+                "email": attrs['email'],
+                "password": attrs['password']
+                },
+            timeout=120
+            )
 
-            cache.set(
-                key=attrs['email'],
-                value={
-                    "code": code,
-                    "username": attrs['username'],
-                    "email": attrs['email'],
-                    "password": attrs['password']
-                    },
-                timeout=120
-                )
-
-            send_email(_('OTP Code'), code, [attrs['email']])
+        send_email(_('OTP Code'), code, [attrs['email']])
 
         return attrs
 
@@ -65,31 +62,30 @@ class UserVerifyEmailToRegisterSerializer(serializers.Serializer):
     email = serializers.EmailField(max_length=199)
 
     def validate(self, attrs):
-        if attrs.get('code') and attrs['email']:
-            code = persian_to_english(attrs['code'])
+        code = persian_to_english(attrs['code'])
 
-            if len(code) != 4:
-                raise serializers.ValidationError(_('Invalid code!'))
+        if len(code) != 4:
+            raise serializers.ValidationError(_('Invalid code!'))
 
-            if cache.get(f'{attrs["email"]}-try') > 10:
-                raise serializers.ValidationError(_('limit!! please try 24 hours later.'))
-            cache.incr(key=f'{attrs["email"]}-try')
+        if cache.get(f'{attrs["email"]}-try') > 10:
+            raise serializers.ValidationError(_('limit!! please try 24 hours later.'))
+        cache.incr(key=f'{attrs["email"]}-try')
 
-            info_register = cache.get(key=attrs['email'])
+        info_register = cache.get(key=attrs['email'])
 
-            if not info_register:
-                raise serializers.ValidationError(_('Invalid code!'))
-            if info_register['code'] != code:
-                raise serializers.ValidationError(_('Invalid code!'))
+        if not info_register:
+            raise serializers.ValidationError(_('Invalid code!'))
+        if info_register['code'] != code:
+            raise serializers.ValidationError(_('Invalid code!'))
 
-            user = get_user_model().objects.create_user(
-                email=info_register['email'],
-                password=info_register['password'],
-                username=info_register['username']
-            )
+        user = get_user_model().objects.create_user(
+            email=info_register['email'],
+            password=info_register['password'],
+            username=info_register['username']
+        )
 
-            token = get_token_for_user(user)
-            attrs['token'] = token
+        token = get_token_for_user(user)
+        attrs['token'] = token
 
         return attrs
 
@@ -100,28 +96,27 @@ class UserLogoutSerializer(serializers.ModelSerializer):
         fields = ('token', )
 
     def validate(self, attrs):
-        if attrs.get('token'):
-            try:
-                token = RefreshToken(token=attrs['token'])
+        try:
+            token = RefreshToken(token=attrs['token'])
 
-            except TokenError:
+        except TokenError:
+            raise serializers.ValidationError(_('Token is invalid or expired.'))
+
+        finally:
+            user = self.context['request'].user
+
+            if OutstandingToken.objects.filter(jti=token.get('jti'), user=user).exists():
                 raise serializers.ValidationError(_('Token is invalid or expired.'))
 
-            finally:
-                user = self.context['request'].user
+            iat = datetime.fromtimestamp(token.get('iat'))
+            exp = datetime.fromtimestamp(token.get('exp'))
 
-                if OutstandingToken.objects.filter(jti=token.get('jti'), user=user).exists():
-                    raise serializers.ValidationError(_('Token is invalid or expired.'))
+            outstanding = OutstandingToken.objects.create(
+                user=user, jti=token.get('jti'),
+                token=str(token), created_at=iat, expire_time=exp
+            )
 
-                iat = datetime.fromtimestamp(token.get('iat'))
-                exp = datetime.fromtimestamp(token.get('exp'))
-
-                outstanding = OutstandingToken.objects.create(
-                    user=user, jti=token.get('jti'),
-                    token=str(token), created_at=iat, expire_time=exp
-                )
-
-                BlacklistedToken.objects.create(token=outstanding)
+            BlacklistedToken.objects.create(token=outstanding)
 
         return attrs
 
