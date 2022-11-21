@@ -1,4 +1,3 @@
-from django.http import Http404
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from django.views.generic import View, DetailView, FormView, ListView
@@ -100,16 +99,11 @@ class MovieCategoryView(ListView):
     paginate_by = 20
 
     def get_queryset(self):
-        genre = self.request.GET.get('genre')
+        genre_slug = self.request.GET.get('genre')
         action = self.request.GET.get('action')
-        if genre:
-            genre = get_object_or_404(Genre, slug=genre)
-            self.category = genre.name
-            return Movie.objects.filter(genres__genre=genre)
-        if action:
-            self.category = action
-            return category_action(action)
-        raise Http404
+        action_info = category_action(action=action, genre=genre_slug)
+        self.category = action_info['category']
+        return action_info['queryset']
 
     def get_context_data(self, *args, object_list=None, **kwargs):
         context = super().get_context_data(*args, object_list=object_list, **kwargs)
