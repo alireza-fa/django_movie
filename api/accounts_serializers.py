@@ -12,6 +12,7 @@ from .models import OutstandingToken, BlacklistedToken
 
 from datetime import datetime
 
+
 class TokenJWTSerializer(serializers.Serializer):
     info_login = serializers.CharField(max_length=199, label=_('username or email'))
     password = serializers.CharField(max_length=128)
@@ -29,6 +30,7 @@ class UserRegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model = get_user_model()
         fields = ('username', 'email', 'password')
+        extra_kwargs = {"password": {"write_only": True}}
 
     def validate(self, attrs):
         trying_count = cache.get(f'{attrs["email"]}-try')
