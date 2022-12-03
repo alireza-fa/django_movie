@@ -39,7 +39,8 @@ class AdminManager(SoftManager):
 
 class UserManager(AdminManager):
     def get_queryset(self):
-        return super().get_queryset().filter(Q(is_active=True), Q(is_delete=False) | Q(is_delete__isnull=True))
+        return super().get_queryset().prefetch_related(
+            'favorites', 'reviews', 'comments').filter(Q(is_active=True), Q(is_delete=False) | Q(is_delete__isnull=True))
 
 
 class SoftDeleteManager(Manager):

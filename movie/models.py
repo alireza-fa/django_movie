@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.db.models import Avg, Sum, Count
 
 from .choices import TYPE_CHOICES, QUALITY_CHOICES, COUNTRY_CHOICES, IRAN
-from .managers import IsActiveManager
+from .managers import IsActiveManager, MovieManager, MovieCommentManager
 
 
 class BaseMovieModel(models.Model):
@@ -49,7 +49,7 @@ class Movie(BaseMovieModel):
     is_active = models.BooleanField(default=True)
 
     default_manager = models.Manager()
-    objects = IsActiveManager()
+    objects = MovieManager()
 
     class Meta:
         verbose_name = _('Movie')
@@ -221,7 +221,7 @@ class MovieComment(BaseMovieModel):
     is_active = models.BooleanField(default=False, verbose_name=_('is active'))
 
     default_manager = models.Manager()
-    objects = IsActiveManager()
+    objects = MovieCommentManager()
 
     class Meta:
         verbose_name = _('Movie Comment')
