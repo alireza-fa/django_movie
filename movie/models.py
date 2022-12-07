@@ -32,7 +32,7 @@ class Genre(models.Model):
 class Movie(BaseMovieModel):
     name = models.CharField(max_length=120, verbose_name=_('name'))
     english_name = models.CharField(max_length=120, verbose_name=_('english name'))
-    slug = models.SlugField(max_length=120, verbose_name=_('slug'))
+    slug = models.SlugField(max_length=120, verbose_name=_('slug'), db_index=True)
     description = models.TextField(verbose_name=_('description'))
     poster = models.ImageField(verbose_name='poster', null=True, blank=True)
     image_cover = models.ImageField(verbose_name=_('image cover'))
@@ -100,6 +100,9 @@ class Movie(BaseMovieModel):
     def get_recommend_movie(cls, user):
         genres = user.get_favorite_genres()
         return cls.objects.filter(genres__genre__id__in=genres).distinct()[:5]
+
+    def get_genres(self):
+        return self.genres.all()
 
 
 class MovieGenre(models.Model):
@@ -282,7 +285,7 @@ class MovieCommentLike(BaseMovieModel):
 class MovieCommentDislike(BaseMovieModel):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='dislikes',
                              verbose_name=_('user'))
-    comment = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='dislikes', verbose_name=_('dislike'))
+    comment = models.ForeignKey(MovieComment, on_delete=models.CASCADE, related_name='dislikes', verbose_name=_('dislike'))
 
     class Meta:
         verbose_name = _('Movie Comment Dislike')
