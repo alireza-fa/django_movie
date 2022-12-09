@@ -77,3 +77,19 @@ class MovieDetailSerializer(serializers.ModelSerializer):
         comments = obj.comments.filter(movie=obj, is_reply=False)
         serializer = MovieCommentParentSerializer(instance=comments, many=True)
         return serializer.data
+
+
+class MovieListSerializer(serializers.ModelSerializer):
+    avg_rate = serializers.SerializerMethodField(method_name='get_avg_rate', read_only=True)
+    genres = serializers.SerializerMethodField(method_name='get_genres', read_only=True)
+
+    class Meta:
+        model = Movie
+        exclude = ('description', 'image_background', 'trailer', 'created', 'modified', 'poster')
+
+    def get_genres(self, obj):
+        genres = obj.get_genres()
+        return MovieGenreSerializer(instance=genres, many=True).data
+
+    def get_avg_rate(self, obj):
+        return obj.get_avg_rate()

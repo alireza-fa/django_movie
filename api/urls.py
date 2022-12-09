@@ -14,7 +14,8 @@ accounts_urls = [
 ]
 
 movie_urls = [
-    path('<slug:slug>/', movie_views.MovieDetailView.as_view(), name='movie_list'),
+    path('', movie_views.MovieListView.as_view(), name='movie_list'),
+    path('<slug:slug>/', movie_views.MovieDetailView.as_view(), name='movie_detail'),
 ]
 
 
