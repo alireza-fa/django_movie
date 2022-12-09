@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from movie.models import Movie, MovieComment, MovieReview, MovieGenre, Genre
+from movie.models import Movie, MovieComment, MovieReview, MovieGenre, Genre, FilmLink
 
 
 class MovieCommentChildSerializer(serializers.ModelSerializer):

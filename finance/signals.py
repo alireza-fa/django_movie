@@ -11,7 +11,6 @@ from accounts.models import UserPremium
 
 @receiver(post_init, sender=Payment)
 def post_initial(sender, **kwargs):
-    print('touch after_initial function')
     if kwargs['instance'].status == 1:
         kwargs['instance'].last_status = 1
     else:

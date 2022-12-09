@@ -6,3 +6,14 @@ class IsNotAuthenticated(BasePermission):
 
     def has_permission(self, request, view):
         return bool(not request.user.is_authenticated)
+
+
+class CheckUserPermissionToGetMovieLink(BasePermission):
+    message = "You don't have permission to get movie link"
+
+    def has_object_permission(self, request, view, obj):
+        if obj.is_free:
+            return True
+        if not request.user.is_authenticated:
+            return False
+        return bool(request.user.has_plan())

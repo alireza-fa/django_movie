@@ -4,10 +4,14 @@
 # TODO: Comment
 # TODO: Movie Comment Like and Dislike
 # TODO: Add or Remove From Favorite Movie
-from rest_framework.generics import RetrieveAPIView, ListAPIView
+from rest_framework.generics import RetrieveAPIView, ListAPIView, get_object_or_404
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework import status
 
 from movie.models import Movie
-from .movie_serializer import MovieDetailSerializer, MovieListSerializer
+from .movie_serializer import MovieDetailSerializer, MovieListSerializer, MovieLinkSerializer
+from .utils.permissions import CheckUserPermissionToGetMovieLink
 
 
 class MovieDetailView(RetrieveAPIView):
