@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from movie.models import (Movie, MovieComment, MovieReview, MovieGenre,
-                          Genre, FilmLink, FilmSubtitle)
+                          Genre, FilmLink, FilmSubtitle, SeriesSeason, SeasonPart, PartLink, SeasonPartSubtitle)
 
 
 class MovieCommentChildSerializer(serializers.ModelSerializer):
@@ -105,7 +105,48 @@ class FilmSubtitleSerializer(serializers.ModelSerializer):
 class FilmLinkSerializer(serializers.ModelSerializer):
     class Meta:
         model = FilmLink
-        exclude = ('created', 'modified')
+        exclude = ('created', 'modified', 'id')
+
+
+class PartLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PartLink
+        exclude = ('season_part', 'created', 'modified', 'id')
+
+
+class SeasonPartSubtitleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SeasonPartSubtitle
+        exclude = ('season_part',)
+
+
+class SeasonPartSerializer(serializers.ModelSerializer):
+    links = serializers.SerializerMethodField(method_name='get_links', read_only=True)
+    subtitles = serializers.SerializerMethodField(method_name='get_subtitles', read_only=True)
+
+    class Meta:
+        model = SeasonPart
+        exclude = ('season', 'id', 'created', 'modified')
+
+    def get_subtitles(self, obj):
+        subtitles = obj.subtitles.all()
+        return SeasonPartSubtitleSerializer(instance=subtitles, many=True).data
+
+    def get_links(self, obj):
+        parts = obj.links.all()
+        return PartLinkSerializer(instance=parts, many=True).data
+
+
+class SeriesSeasonSerializer(serializers.ModelSerializer):
+    parts = serializers.SerializerMethodField(method_name='get_parts', read_only=True)
+
+    class Meta:
+        model = SeriesSeason
+        exclude = ('created', 'modified', 'id')
+
+    def get_parts(self, obj):
+        parts = obj.parts.all()
+        return SeasonPartSerializer(instance=parts, many=True).data
 
 
 class MovieLinkSerializer(serializers.Serializer):
@@ -116,6 +157,8 @@ class MovieLinkSerializer(serializers.Serializer):
         if obj.type == 1:
             instances = obj.links.all()
             return FilmLinkSerializer(instance=instances, many=True).data
+        seasons = obj.seasons.all()
+        return SeriesSeasonSerializer(instance=seasons, many=True).data
 
     def get_subtitles(self, obj):
         subtitles = obj.subtitles.all()
