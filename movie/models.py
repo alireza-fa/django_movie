@@ -104,6 +104,9 @@ class Movie(BaseMovieModel):
     def get_genres(self):
         return self.genres.all()
 
+    def get_similar_movies(self):
+        return Movie.objects.filter(genres__genre_id__in=self.genres.all().values('genre__id')).distinct()[:12]
+
 
 class MovieGenre(models.Model):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='genres', verbose_name=_('movie'))
