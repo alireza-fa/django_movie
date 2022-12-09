@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from movie.models import Movie, MovieComment, MovieReview, MovieGenre, Genre, FilmLink
+from movie.models import (Movie, MovieComment, MovieReview, MovieGenre,
+                          Genre, FilmLink, FilmSubtitle)
 
 
 class MovieCommentChildSerializer(serializers.ModelSerializer):
@@ -93,3 +94,29 @@ class MovieListSerializer(serializers.ModelSerializer):
 
     def get_avg_rate(self, obj):
         return obj.get_avg_rate()
+
+
+class FilmSubtitleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FilmSubtitle
+        exclude = ('film',)
+
+
+class FilmLinkSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = FilmLink
+        exclude = ('created', 'modified')
+
+
+class MovieLinkSerializer(serializers.Serializer):
+    links = serializers.SerializerMethodField(method_name='get_links', read_only=True)
+    subtitles = serializers.SerializerMethodField(method_name='get_subtitles', read_only=True)
+
+    def get_links(self, obj):
+        if obj.type == 1:
+            instances = obj.links.all()
+            return FilmLinkSerializer(instance=instances, many=True).data
+
+    def get_subtitles(self, obj):
+        subtitles = obj.subtitles.all()
+        return FilmSubtitleSerializer(instance=subtitles, many=True).data

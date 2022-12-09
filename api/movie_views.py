@@ -25,3 +25,15 @@ class MovieListView(ListAPIView):
     model = Movie
     queryset = Movie.objects.all()
     serializer_class = MovieListSerializer
+
+
+class MovieLinkView(APIView):
+    permission_classes = (CheckUserPermissionToGetMovieLink,)
+    model = Movie
+    serializer_class = MovieLinkSerializer
+
+    def get(self, request, slug):
+        movie = get_object_or_404(Movie.objects.all(), slug=slug)
+        self.check_object_permissions(request, movie)
+        serializer = self.serializer_class(instance=movie)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
