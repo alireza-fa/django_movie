@@ -30,6 +30,7 @@ movie_urls = [
 
 core_urls = [
     path('magazine/', core_views.MagazineCreateView.as_view(), name='magazine_create'),
+    path('contact/', core_views.ContactUsCreateSerializer.as_view(), name='contact_create'),
 ]
 
 
