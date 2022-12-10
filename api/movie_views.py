@@ -1,13 +1,15 @@
+# Movie Actions
 from rest_framework.generics import RetrieveAPIView, ListAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
-from movie.models import Movie, MovieComment, MovieCommentLike, MovieCommentDislike, FavoriteMovie
+from movie.models import (Movie, MovieComment, MovieCommentLike,
+                          MovieCommentDislike, FavoriteMovie, Genre)
 from .movie_serializer import (MovieDetailSerializer, MovieListSerializer,
                                MovieLinkSerializer, MovieCommentSerializer,
-                               MovieReviewSerializer,)
+                               MovieReviewSerializer, GenreSerializer)
 from .utils.permissions import CheckUserPermissionToGetMovieLink
 
 
@@ -83,3 +85,8 @@ class AddFavoriteMovieView(APIView):
         movie = get_object_or_404(Movie, id=movie_id)
         FavoriteMovie.add(request.user, movie)
         return Response(data={"data": 'Ok'}, status=status.HTTP_200_OK)
+
+
+class GenreListView(ListAPIView):
+    queryset = Genre.objects.all()
+    serializer_class = GenreSerializer

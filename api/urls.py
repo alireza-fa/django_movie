@@ -24,6 +24,7 @@ movie_urls = [
     path('links/<slug:slug>/', movie_views.MovieLinkView.as_view(), name='movie_links'),
     path('detail/<slug:slug>/', movie_views.MovieDetailView.as_view(), name='movie_detail'),
     path('favorite/add/<int:movie_id>/', movie_views.AddFavoriteMovieView.as_view(), name='favorite_add'),
+    path('genres/', movie_views.GenreListView.as_view(), name='genre_list'),
 ]
 
 
