@@ -335,6 +335,15 @@ class FavoriteMovie(BaseMovieModel):
     def __str__(self):
         return f'{self.user} - {self.movie}'
 
+    @classmethod
+    def add(cls, user, movie):
+        instance = cls.objects.filter(user=user, movie=movie)
+        if instance.exists():
+            instance.delete()
+        else:
+            cls.objects.create(user=user, movie=movie)
+        return True
+
 
 class MovieView(BaseMovieModel):
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='views')
