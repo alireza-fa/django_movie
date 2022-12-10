@@ -1,7 +1,36 @@
 from rest_framework import serializers
+from rest_framework.generics import get_object_or_404
+from django.http import Http404
 
 from movie.models import (Movie, MovieComment, MovieReview, MovieGenre,
                           Genre, FilmLink, FilmSubtitle, SeriesSeason, SeasonPart, PartLink, SeasonPartSubtitle)
+
+
+class MovieCommentSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = MovieComment
+        exclude = ('modified', 'is_active', 'is_read', 'id')
+        extra_kwargs = {
+            "user": {"read_only": True},
+            "movie": {"read_only": True},
+            "parent": {"read_only": True},
+            "is_reply": {"read_only": True}
+        }
+
+    def save(self, request, movie_id, comment_id=None):
+        movie = get_object_or_404(Movie, id=movie_id)
+        comment = MovieComment(
+            user=request.user, movie=movie, body=self.validated_data['body']
+        )
+        if comment_id:
+            parent_comment = get_object_or_404(MovieComment, id=comment_id)
+            if not parent_comment.movie == movie:
+                raise Http404
+            comment.parent = parent_comment
+            comment.is_reply = True
+        comment.save()
+        return comment
 
 
 class MovieCommentChildSerializer(serializers.ModelSerializer):
@@ -17,7 +46,7 @@ class MovieCommentParentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MovieComment
-        exclude = ('modified', 'is_active', 'is_read')
+        exclude = ('modified', 'is_active', 'is_read', 'id')
 
     def get_children(self, obj):
         comments = obj.children.filter(parent=obj)
@@ -34,6 +63,20 @@ class MovieReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = MovieReview
         exclude = ('is_read', 'is_active', 'modified')
+        extra_kwargs = {
+            "user": {"read_only": True},
+            "movie": {"read_only": True},
+            "created": {"read_only": True}
+        }
+
+    def save(self, request, movie_id):
+        movie = get_object_or_404(Movie, id=movie_id)
+        data = self.validated_data
+        MovieReview.objects.create(
+            user=request.user, movie=movie, rate=data['rate'],
+            subject=data['subject'], description=data['description']
+        )
+        return True
 
 
 class GenreSerializer(serializers.ModelSerializer):
