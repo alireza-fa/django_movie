@@ -1,4 +1,3 @@
-# TODO: Movie Comment Like and Dislike
 # TODO: Add or Remove From Favorite Movie
 from rest_framework.generics import RetrieveAPIView, ListAPIView, get_object_or_404, CreateAPIView
 from rest_framework.response import Response
@@ -6,7 +5,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
-from movie.models import Movie
+from movie.models import Movie, MovieComment, MovieCommentLike, MovieCommentDislike
 from .movie_serializer import (MovieDetailSerializer, MovieListSerializer,
                                MovieLinkSerializer, MovieCommentSerializer,
                                MovieReviewSerializer,)
@@ -58,3 +57,21 @@ class MovieReviewCreateView(APIView):
         serializer.is_valid(raise_exception=True)
         serializer.save(request, movie_id)
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+
+
+class MovieCommentLikeView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, comment_id):
+        comment = get_object_or_404(MovieComment, id=comment_id)
+        MovieCommentLike.like(user=request.user, comment=comment)
+        return Response(data={"data": 'Ok'}, status=status.HTTP_200_OK)
+
+
+class MovieCommentDislikeView(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    def get(self, request, comment_id):
+        comment = get_object_or_404(MovieComment, id=comment_id)
+        MovieCommentDislike.dislike(request.user, comment)
+        return Response(data={"data": "Ok"}, status=status.HTTP_200_OK)

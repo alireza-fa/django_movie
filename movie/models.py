@@ -284,6 +284,18 @@ class MovieCommentLike(BaseMovieModel):
     def __str__(self):
         return f'{self.user} - {self.comment}'
 
+    @classmethod
+    def like(cls, user, comment):
+        like_instance = cls.objects.filter(user=user, comment=comment)
+        if like_instance.exists():
+            like_instance.delete()
+        else:
+            cls.objects.create(user=user, comment=comment)
+        dislike_instance = MovieCommentDislike.objects.filter(user=user, comment=comment)
+        if dislike_instance.exists():
+            dislike_instance.delete()
+        return True
+
 
 class MovieCommentDislike(BaseMovieModel):
     user = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, related_name='dislikes',
@@ -296,6 +308,18 @@ class MovieCommentDislike(BaseMovieModel):
 
     def __str__(self):
         return f'{self.user} - {self.comment}'
+
+    @classmethod
+    def dislike(cls, user, comment):
+        dislike_instance = cls.objects.filter(user=user, comment=comment)
+        if dislike_instance.exists():
+            dislike_instance.delete()
+        else:
+            cls.objects.create(user=user, comment=comment)
+        like_instance = MovieCommentLike.objects.filter(user=user, comment=comment)
+        if like_instance.exists():
+            like_instance.delete()
+        return True
 
 
 class FavoriteMovie(BaseMovieModel):

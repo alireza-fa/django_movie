@@ -4,7 +4,7 @@ from . import accounts_views, movie_views, core_views
 
 
 app_name = 'api'
-
+# 917981
 
 accounts_urls = [
     path('register/', accounts_views.UserRegisterView.as_view(), name='register'),
@@ -16,7 +16,10 @@ accounts_urls = [
 movie_urls = [
     path('', movie_views.MovieListView.as_view(), name='movie_list'),
     path('comments/<int:movie_id>/', movie_views.MovieCommentCreateView.as_view(), name='comment_create'),
-    path('comments/<int:movie_id>/<int:comment_id>/', movie_views.MovieCommentCreateView.as_view(), name='comment_create'),
+    path('comments/<int:movie_id>/<int:comment_id>/', movie_views.MovieCommentCreateView.as_view(),
+         name='comment_create'),
+    path('comment/like/<int:comment_id>/', movie_views.MovieCommentLikeView.as_view(), name='comment_like'),
+    path('comment/dislike/<int:comment_id>/', movie_views.MovieCommentDislikeView.as_view(), name='comment_dislike'),
     path('reviews/<int:movie_id>/', movie_views.MovieReviewCreateView.as_view(), name='review_create'),
     path('links/<slug:slug>/', movie_views.MovieLinkView.as_view(), name='movie_links'),
     path('detail/<slug:slug>/', movie_views.MovieDetailView.as_view(), name='movie_detail'),
