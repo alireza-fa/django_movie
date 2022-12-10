@@ -1,4 +1,3 @@
-# Movie Actions
 from rest_framework.generics import RetrieveAPIView, ListAPIView, get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -11,6 +10,7 @@ from .movie_serializer import (MovieDetailSerializer, MovieListSerializer,
                                MovieLinkSerializer, MovieCommentSerializer,
                                MovieReviewSerializer, GenreSerializer)
 from .utils.permissions import CheckUserPermissionToGetMovieLink
+from movie.actions import category_action
 
 
 class MovieDetailView(RetrieveAPIView):
@@ -90,3 +90,14 @@ class AddFavoriteMovieView(APIView):
 class GenreListView(ListAPIView):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
+
+
+class MovieActionView(APIView):
+    serializer_classes = MovieListSerializer
+
+    def get(self, request):
+        genre_slug = request.query_params.get('genre')
+        action = request.query_params.get('action')
+        action_info = category_action(action, genre_slug)
+        serializer = self.serializer_classes(instance=action_info['queryset'], many=True)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)

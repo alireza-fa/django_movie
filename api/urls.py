@@ -4,7 +4,6 @@ from . import accounts_views, movie_views, core_views
 
 
 app_name = 'api'
-# 917981
 
 accounts_urls = [
     path('register/', accounts_views.UserRegisterView.as_view(), name='register'),
@@ -25,6 +24,7 @@ movie_urls = [
     path('detail/<slug:slug>/', movie_views.MovieDetailView.as_view(), name='movie_detail'),
     path('favorite/add/<int:movie_id>/', movie_views.AddFavoriteMovieView.as_view(), name='favorite_add'),
     path('genres/', movie_views.GenreListView.as_view(), name='genre_list'),
+    path('action/', movie_views.MovieActionView.as_view(), name='movie_action'),
 ]
 
 
