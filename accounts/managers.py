@@ -51,3 +51,8 @@ class SoftDeleteManager(Manager):
 class IsActiveAndValidExpireTimeManager(Manager):
     def get_queryset(self):
         return super().get_queryset().filter(is_active=True, expire_time__gte=datetime.now())
+
+
+class UserPasswordResetManager(Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(expire_time__gte=datetime.now())

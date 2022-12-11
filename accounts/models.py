@@ -1,4 +1,5 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+import uuid
 
 from django.contrib.auth.validators import UnicodeUsernameValidator
 from django.db import models
@@ -6,7 +7,8 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 
-from .managers import UserManager, AdminManager, SoftDeleteManager, IsActiveAndValidExpireTimeManager
+from .managers import (UserManager, AdminManager, SoftDeleteManager, IsActiveAndValidExpireTimeManager,
+                       UserPasswordResetManager)
 
 
 class SoftDelete(models.Model):
@@ -128,3 +130,29 @@ class UserPremium(models.Model):
 
     def __str__(self):
         return f'{self.user} - {self.expire_time}'
+
+
+class UserPasswordReset(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_resets', verbose_name=_('user'))
+    uuid = models.UUIDField(default=uuid.uuid4, unique=True, verbose_name=_('uuid'))
+    expire_time = models.DateTimeField(default=datetime.now() + timedelta(days=1), verbose_name=_('expire time'))
+
+    objects = models.Manager()
+    default_manager = UserPasswordResetManager()
+
+    class Meta:
+        verbose_name = _('User Forget Password')
+        verbose_name_plural = _('User Forget Passwords')
+        ordering = ('-expire_time',)
+
+    def __str__(self):
+        return f'{self.user}-{self.expire_time}'
+
+    def get_absolute_url(self):
+        from django.urls import reverse
+        return reverse('api:password_reset', args=[self.uuid])
+
+    @classmethod
+    def delete_expired(cls):
+        cls.default_manager.filter(expire_time__lte=datetime.now()).delete()
+        return True

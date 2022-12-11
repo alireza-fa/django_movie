@@ -11,6 +11,8 @@ accounts_urls = [
          name='register_verify_email'),
     path('logout/', accounts_views.UserLogoutView.as_view(), name='user_logout'),
     path('change_password/', accounts_views.UserChangePasswordView.as_view(), name='password_change'),
+    path('forget_password/', accounts_views.UserForgetPasswordView.as_view(), name='password_forget'),
+    path('reset_password/<uuid:uuid>/', accounts_views.UserResetPasswordView.as_view(), name='password_reset'),
 ]
 
 movie_urls = [

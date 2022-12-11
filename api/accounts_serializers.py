@@ -6,6 +6,7 @@ from django.core.cache import cache
 
 from .utils.jwt import get_token_for_user
 from accounts.utils import otp_code
+from accounts.models import UserPasswordReset
 from utils.send_email import send_email
 from utils.convert_numbers import persian_to_english
 from .models import OutstandingToken, BlacklistedToken
@@ -141,8 +142,8 @@ class TokenRefreshSerializer(serializers.Serializer):
 
 
 class UserChangePasswordSerializer(serializers.Serializer):
-    old_password = serializers.CharField(min_length=8, max_length=64)
-    new_password = serializers.CharField(min_length=8, max_length=64)
+    old_password = serializers.CharField(min_length=8, max_length=128)
+    new_password = serializers.CharField(min_length=8, max_length=128)
 
     def validate(self, attrs):
         request = self.context['request']
@@ -151,4 +152,32 @@ class UserChangePasswordSerializer(serializers.Serializer):
             raise serializers.ValidationError(_('old password is wrong.'))
         user.set_password(attrs['new_password'])
         user.save()
+        return attrs
+
+
+class UserForgetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField(max_length=199)
+
+    def validate_email(self, email):
+        user = get_user_model().objects.filter(email=email)
+        if user.exists():
+            resets = UserPasswordReset.objects.filter(user=user[0])
+            if resets.count() >= 3:
+                raise serializers.ValidationError(_('You reach the limit reset email (three time per one day)'))
+            reset = UserPasswordReset.objects.create(user=user[0])
+            send_email(
+                subject=_('Reset password'),
+                body=f'for reset password, enter the blow link:\n{reset.get_absolute_url()}',
+                receiver_list=[email])
+        return email
+
+
+class UserResetPasswordSerializer(serializers.Serializer):
+    password = serializers.CharField(min_length=8, max_length=128)
+
+    def validate(self, attrs):
+        user = self.context['reset'].user
+        user.set_password(attrs['password'])
+        user.save()
+        self.context['reset'].delete()
         return attrs

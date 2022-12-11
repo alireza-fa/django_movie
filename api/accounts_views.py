@@ -1,9 +1,13 @@
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.generics import get_object_or_404
 
 from .accounts_serializers import (TokenJWTSerializer, UserRegisterSerializer, UserVerifyEmailToRegisterSerializer,
                                    UserLogoutSerializer, TokenRefreshSerializer, UserChangePasswordSerializer,
-                                   )
+                                   UserForgetPasswordSerializer, UserResetPasswordSerializer)
+from accounts.models import UserPasswordReset
 from .utils.views import PostView
 from .utils.permissions import IsNotAuthenticated
 
@@ -49,5 +53,19 @@ class UserChangePasswordView(PostView):
     message_to_response = 'your password successfully changed.'
 
 
+class UserForgetPasswordView(PostView):
+    serializer_class = UserForgetPasswordSerializer
+    message_to_response = 'if entered your email is a correct email, we sent a mail for reset password.'
+
+
+class UserResetPasswordView(APIView):
+    serializer_class = UserResetPasswordSerializer
+
+    def get(self, request, uuid):
+        reset = get_object_or_404(UserPasswordReset, uuid=uuid)
+        serializer = self.serializer_class(data=request.data, context={"reset": reset})
+        serializer.is_valid(raise_exception=True)
+        return Response(data={"data": 'Your password successfully changed.'})
+
+
 # TODO: user profile
-# TODO: user forget password
