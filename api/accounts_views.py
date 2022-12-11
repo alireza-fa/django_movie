@@ -2,7 +2,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 
 from .accounts_serializers import (TokenJWTSerializer, UserRegisterSerializer, UserVerifyEmailToRegisterSerializer,
-                                   UserLogoutSerializer, TokenRefreshSerializer,
+                                   UserLogoutSerializer, TokenRefreshSerializer, UserChangePasswordSerializer,
                                    )
 from .utils.views import PostView
 from .utils.permissions import IsNotAuthenticated
@@ -42,5 +42,12 @@ class TokenRefreshView(PostView):
     status = status.HTTP_200_OK
 
 
+class UserChangePasswordView(PostView):
+    permission_classes = (IsAuthenticated,)
+    serializer_class = UserChangePasswordSerializer
+    send_request_to_serializer = True
+    message_to_response = 'your password successfully changed.'
+
+
 # TODO: user profile
-# TODO: search
+# TODO: user forget password

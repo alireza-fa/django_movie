@@ -138,3 +138,17 @@ class TokenRefreshSerializer(serializers.Serializer):
         attrs['access_token'] = {"access": str(token.access_token)}
 
         return attrs
+
+
+class UserChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(min_length=8, max_length=64)
+    new_password = serializers.CharField(min_length=8, max_length=64)
+
+    def validate(self, attrs):
+        request = self.context['request']
+        user = authenticate(username=request.user.username, password=attrs['old_password'])
+        if not user:
+            raise serializers.ValidationError(_('old password is wrong.'))
+        user.set_password(attrs['new_password'])
+        user.save()
+        return attrs

@@ -29,7 +29,7 @@ class PostView(APIView):
         serializer.is_valid(raise_exception=True)
 
         if self.message_to_response:
-            return Response(data={"message": self.message_to_response}, status=self.status)
+            return Response(data={"data": self.message_to_response}, status=self.status)
         elif self.filter_data_to_response:
             return Response(data=serializer.validated_data.get(self.filter_data_to_response), status=self.status)
         elif self.no_content:

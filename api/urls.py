@@ -10,6 +10,7 @@ accounts_urls = [
     path('register/verify_email/', accounts_views.UserVerifyEmailTORegisterView.as_view(),
          name='register_verify_email'),
     path('logout/', accounts_views.UserLogoutView.as_view(), name='user_logout'),
+    path('change_password/', accounts_views.UserChangePasswordView.as_view(), name='password_change'),
 ]
 
 movie_urls = [
