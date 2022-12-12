@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from . import accounts_views, movie_views, core_views
+from . import accounts_views, movie_views, core_views, finance_views
 
 
 app_name = 'api'
@@ -38,6 +38,11 @@ core_urls = [
 ]
 
 
+finance_urls = [
+    path('plans/', finance_views.PlanListView.as_view(), name='plan_list'),
+]
+
+
 urlpatterns = [
     path('', include(core_urls)),
     path('token/', accounts_views.TokenJWTView.as_view(), name='token_obtain_pair'),
@@ -45,4 +50,5 @@ urlpatterns = [
     #
     path('accounts/', include(accounts_urls)),
     path('movies/', include(movie_urls)),
+    path('finance/', include(finance_urls)),
 ]
