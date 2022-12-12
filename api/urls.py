@@ -13,6 +13,7 @@ accounts_urls = [
     path('change_password/', accounts_views.UserChangePasswordView.as_view(), name='password_change'),
     path('forget_password/', accounts_views.UserForgetPasswordView.as_view(), name='password_forget'),
     path('reset_password/<uuid:uuid>/', accounts_views.UserResetPasswordView.as_view(), name='password_reset'),
+    path('profile/<int:pk>/', accounts_views.UserProfileView.as_view(), name='user_profile'),
 ]
 
 movie_urls = [

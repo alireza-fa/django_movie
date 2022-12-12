@@ -4,6 +4,8 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.auth import authenticate, get_user_model
 from django.core.cache import cache
 
+from movie.models import Movie
+from .movie_serializer import MovieListSerializer, MovieReviewSerializer
 from .utils.jwt import get_token_for_user
 from accounts.utils import otp_code
 from accounts.models import UserPasswordReset
@@ -181,3 +183,50 @@ class UserResetPasswordSerializer(serializers.Serializer):
         user.save()
         self.context['reset'].delete()
         return attrs
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    recommend_movies = serializers.SerializerMethodField(method_name='get_recommend_movie', read_only=True)
+    last_reviews = serializers.SerializerMethodField(method_name='get_last_reviews', read_only=True)
+    comment_count = serializers.SerializerMethodField(method_name='get_comment_count', read_only=True)
+    review_count = serializers.SerializerMethodField(method_name='get_review_count', read_only=True)
+    plan_days = serializers.SerializerMethodField(method_name='get_plan_days', read_only=True)
+    favorite_movies = serializers.SerializerMethodField(method_name='get_favorite_movies', read_only=True)
+
+    class Meta:
+        model = get_user_model()
+        fields = ('id', 'username', 'email',
+                  'first_name', 'last_name',
+                  'recommend_movies', 'last_reviews',
+                  'comment_count', 'review_count',
+                  'plan_days', 'favorite_movies',)
+        extra_kwargs = {
+            "id": {"read_only": True},
+        }
+
+    def get_recommend_movie(self, obj):
+        movies = Movie.get_recommend_movie(user=obj)
+        return MovieListSerializer(instance=movies, many=True).data
+
+    def get_last_reviews(self, obj):
+        reviews = obj.get_last_reviews()
+        return MovieReviewSerializer(instance=reviews, many=True).data
+
+    def get_comment_count(self, obj):
+        return obj.get_comments().count()
+
+    def get_review_count(self, obj):
+        return obj.get_reviews().count()
+
+    def get_plan_days(self, obj):
+        return obj.get_plan_days()
+
+    def get_favorite_movies(self, obj):
+        movies = Movie.objects.filter(favorites__user=obj)
+        return MovieListSerializer(instance=movies, many=True).data
+
+
+class UserProfileEditSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = get_user_model()
+        fields = ('username', 'email', 'first_name', 'last_name')

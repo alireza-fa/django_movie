@@ -2,14 +2,16 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from rest_framework.generics import get_object_or_404
+from rest_framework.generics import get_object_or_404, RetrieveUpdateAPIView
+from django.contrib.auth import get_user_model
 
 from .accounts_serializers import (TokenJWTSerializer, UserRegisterSerializer, UserVerifyEmailToRegisterSerializer,
                                    UserLogoutSerializer, TokenRefreshSerializer, UserChangePasswordSerializer,
-                                   UserForgetPasswordSerializer, UserResetPasswordSerializer)
+                                   UserForgetPasswordSerializer, UserResetPasswordSerializer, UserProfileSerializer,
+                                   UserProfileEditSerializer,)
 from accounts.models import UserPasswordReset
 from .utils.views import PostView
-from .utils.permissions import IsNotAuthenticated
+from .utils.permissions import IsNotAuthenticated, ProfilePermission
 
 
 class TokenJWTView(PostView):
@@ -68,4 +70,12 @@ class UserResetPasswordView(APIView):
         return Response(data={"data": 'Your password successfully changed.'})
 
 
-# TODO: user profile
+class UserProfileView(RetrieveUpdateAPIView):
+    permission_classes = (ProfilePermission,)
+    serializer_class = UserProfileSerializer
+    queryset = get_user_model().objects.all()
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return UserProfileSerializer
+        return UserProfileEditSerializer
