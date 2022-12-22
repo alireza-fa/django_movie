@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # third party apps
     'social_django',
     'rest_framework',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -203,7 +204,12 @@ REST_FRAMEWORK = {
     'DEFAULT_THROTTLE_RATES': {
         'anon': '100/day',
         'user': '1000/day'
-    }
+    },
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 20,
+    'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ),
 }
 
 

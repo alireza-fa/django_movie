@@ -14,6 +14,7 @@ click-repl==0.2.0
 cryptography==37.0.4
 defusedxml==0.7.1
 Django==3.2
+django-filter==22.1
 django-storages==1.13.1
 django-timezone-field==5.0
 djangorestframework==3.14.0

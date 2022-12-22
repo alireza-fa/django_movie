@@ -11,6 +11,7 @@ from .movie_serializer import (MovieDetailSerializer, MovieListSerializer,
                                MovieReviewSerializer, GenreSerializer)
 from .utils.permissions import CheckUserPermissionToGetMovieLink
 from movie.actions import category_action
+from .filters import MovieFilter
 
 
 class MovieDetailView(RetrieveAPIView):
@@ -101,3 +102,13 @@ class MovieActionView(APIView):
         action_info = category_action(action, genre_slug)
         serializer = self.serializer_classes(instance=action_info['queryset'], many=True)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+
+class MovieFilteringView(ListAPIView):
+    queryset = Movie.objects.all()
+    serializer_class = MovieListSerializer
+    filterset_class = MovieFilter
+
+
+# Filtering
+# Caching

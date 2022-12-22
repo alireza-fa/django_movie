@@ -29,6 +29,7 @@ movie_urls = [
     path('favorite/add/<int:movie_id>/', movie_views.AddFavoriteMovieView.as_view(), name='favorite_add'),
     path('genres/', movie_views.GenreListView.as_view(), name='genre_list'),
     path('action/', movie_views.MovieActionView.as_view(), name='movie_action'),
+    path('filter/', movie_views.MovieFilteringView.as_view(), name='movie_filter'),
 ]
 
 
